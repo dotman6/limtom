@@ -62,7 +62,6 @@
                   :data-item-price="product.price"
                   :data-item-image="product.image_url"
                   :data-item-description="product.description"
-                  :data-item-url="`https://smart-supply-store.netlify.app/${product.id}`"
                 >
                   Add to cart
                 </v-btn>
