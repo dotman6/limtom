@@ -62,6 +62,7 @@
                   :data-item-price="product.price"
                   :data-item-image="product.image_url"
                   :data-item-description="product.description"
+                  :data-item-url="`https://deluxe-fudge-13dd9f.netlify.app/`"
                 >
                   Add to cart
                 </v-btn>
