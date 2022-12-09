@@ -1,8 +1,12 @@
 <template>
   <v-app>
     <v-app-bar fixed flat app>
-      <v-toolbar-title v-text="title" class="font-weight-bold" />
+      <v-toolbar-title v-text="title" />
       <v-spacer />
+      <Cart />
+      <span
+        class="snipcart-total-price ml-3 font-semibold text-sm text-indigo-500"
+      ></span>
     </v-app-bar>
     <v-main app>
       <v-container>
@@ -13,10 +17,14 @@
 </template>
 
 <script>
+import Cart from '~/components/Cart.vue'
 export default {
+  components: {
+    Cart,
+  },
   data() {
     return {
-      title: 'Supply Store',
+      title: 'MIKE & COLE SUPPER MALL',
       dialog: false,
     }
   },

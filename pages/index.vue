@@ -28,7 +28,10 @@
           show-arrows
         >
           <v-slide-item v-for="(product, i) in slideItems" :key="i">
-            <nuxt-link :to="`/${product.id}`" class="text-decoration-none">
+            <nuxt-link
+              :to="`products/${product.id}`"
+              class="text-decoration-none"
+            >
               <v-card class="ma-4" width="250">
                 <v-img
                   height="150"
@@ -51,23 +54,22 @@
                   </div>
                 </v-card-text>
                 <v-card-text class="pa-0 pl-16 pr-16"> </v-card-text>
-                <v-card-actions class="pt-5 pb-5 justify-center">
-                  <v-btn
-                    color="blue darken-1"
-                    small
-                    outlined
-                    class="text-capitalize snipcart-add-item pl-10 pr-10 block"
-                    @click="addToCart(product)"
-                    :data-item-id="product.id"
-                    :data-item-name="product.product_name"
-                    :data-item-price="product.price"
-                    :data-item-image="product.image_url"
-                    :data-item-description="product.description"
-                    :data-item-url="`/${product.id}`"
-                  >
-                    Add to cart
-                  </v-btn>
-                </v-card-actions>
+                <!-- <v-card-actions class="pt-5 pb-5 justify-center">
+                <v-btn
+                  color="blue darken-1"
+                  small
+                  outlined
+                  class="text-capitalize snipcart-add-item pl-10 pr-10 block"
+                  :data-item-id="product.id"
+                  :data-item-name="product.product_name"
+                  :data-item-price="product.price"
+                  :data-item-image="product.image_url"
+                  :data-item-description="product.description"
+                  :data-item-url="`https://smart-supply-store.netlify.app${product.id}`"
+                >
+                  Add to cart
+                </v-btn>
+              </v-card-actions> -->
               </v-card>
             </nuxt-link>
           </v-slide-item>
