@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer :mini-variant="miniVariant" :clipped="clipped" app>
+    <v-navigation-drawer :clipped="clipped" app>
       <v-list>
         <v-list-item
           v-for="(item, i) in items"
@@ -21,21 +21,26 @@
     <v-app-bar :clipped-left="clipped" fixed flat app>
       <v-toolbar-title v-text="title" />
       <v-spacer />
+      <h6></h6>
       <v-btn color="primary" outlined @click="logout">Log-out</v-btn>
     </v-app-bar>
-    <v-main app>
+    <notify />
+    <v-main>
       <v-container>
         <nuxt />
       </v-container>
     </v-main>
-    <!-- <v-footer :absolute="!fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer> -->
   </v-app>
 </template>
 
 <script>
+import Notify from '~/components/Notification.vue'
 export default {
+  components: {
+    Notify,
+  },
+  // middleware: 'auth',
+
   data() {
     return {
       clipped: true,
@@ -44,7 +49,7 @@ export default {
         {
           icon: 'mdi-apps',
           title: 'Dashboard',
-          to: '/dashboard',
+          to: '/admin/dashboard',
         },
         {
           icon: 'mdi-store',
@@ -67,21 +72,37 @@ export default {
           to: '/flash',
         },
       ],
-      miniVariant: false,
-      // right: true,
-      // rightDrawer: false,
       title: 'Warehouse Manager',
+      authenticated: false,
+      authListener: null,
     }
   },
   methods: {
     logout() {
       this.$router.push('/auth/login')
     },
+
+    async checkUser() {
+      const user = await this.$supabase.auth.getUser()
+      if (user) {
+        this.authenticated = true
+      } else {
+        this.authenticated = false
+      }
+    },
+  },
+  async mounted() {
+    //Check to see if the user is signed in when page loads and also create a listener for sign-in and sign-out
+    const { data: authListener } = this.$supabase.auth.onAuthStateChange(() =>
+      this.checkUser()
+    )
+    this.authListener = authListener
+    this.checkUser()
+  },
+
+  beforeMount() {
+    this.authListener?.unsubscribe()
   },
 }
 </script>
-<style lang="css">
-.container {
-  max-height: 100vh;
-}
-</style>
+<style lang="css"></style>

@@ -2,7 +2,6 @@
   <v-card class="pb-5 pt-5">
     <v-card-title class="headline d-flex flex-column pb-3">
       <v-avatar color="black"> SCC </v-avatar>
-
       Login
     </v-card-title>
     <v-card-text class="pl-5 pr-5">
@@ -77,22 +76,35 @@ export default {
   },
 
   methods: {
-    login() {
+    async login() {
       if (this.$refs.form.validate()) {
-        this.$router.push('/admin/products')
-        console.log(this.$router)
-        return (this.user = {
+        const { data, error } = await this.$supabase.auth.signInWithPassword({
           email: this.email,
           password: this.password,
-          role: this.role,
+          options: {
+            data: {
+              role: this.select,
+            },
+          },
         })
+        if (!error) {
+          this.$router.push('/admin/products')
+
+          this.$store.dispatch('setSnackbar', {
+            show: true,
+            content: 'Login successfull',
+            color: 'success',
+          })
+        }
+
+        if (error) {
+          this.$store.dispatch('setSnackbar', {
+            show: true,
+            content: error,
+            color: 'error',
+          })
+        }
       }
-    },
-    reset() {
-      this.$refs.form.reset()
-    },
-    resetValidation() {
-      this.$refs.form.resetValidation()
     },
   },
 }

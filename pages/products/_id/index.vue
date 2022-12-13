@@ -36,6 +36,7 @@
         </v-btn>
       </v-card-actions>
     </v-card>
+    <v-btn color="primary" text class="align-self-end" to="/">Back</v-btn>
   </div>
 </template>
 
@@ -55,7 +56,13 @@ export default {
       .select('*')
       .eq('id', `${this.$route.params.id}`)
     this.product = await Products[0]
-    console.log(this.product[0])
+    if (error) {
+      this.$store.dispatch('setSnackbar', {
+        show: true,
+        content: 'Error retreiving products',
+        color: 'error',
+      })
+    }
   },
 }
 </script>

@@ -64,14 +64,33 @@ export default {
   },
 
   methods: {
-    signup() {
+    async signup() {
       if (this.$refs.form.validate()) {
-        this.$router.push('/')
-        return (this.user = {
+        const { data, error } = await this.$supabase.auth.signUp({
           email: this.email,
           password: this.password,
-          role: customer,
+          options: {
+            data: {
+              role: 'admin',
+            },
+          },
         })
+        if (!error && data.user.identities.length === 0) {
+          this.$store.dispatch('setSnackbar', {
+            show: true,
+            content: 'Account already exist',
+            color: 'error',
+          })
+        }
+        if (!error && data.user.identities.length > 0) {
+          this.$store.dispatch('setSnackbar', {
+            show: true,
+            content: 'Account creation successfull',
+            color: 'success',
+          })
+          this.$router.push('/auth/confirmation')
+        }
+        console.log(data)
       }
     },
     reset() {

@@ -113,6 +113,18 @@ export default {
       .eq('category', `${this.select.toLowerCase()}`)
     this.slideItems = Products
     this.$store.dispatch('setProducts', Products)
+    this.$store.dispatch('setSnackbar', {
+      show: true,
+      content: `All ${this.select} products retrieved`,
+      color: 'success',
+    })
+    if (error) {
+      this.$store.dispatch('setSnackbar', {
+        show: true,
+        content: 'Error retreiving products',
+        color: 'error',
+      })
+    }
   },
   watch: {
     async select(newValue, oldValue) {
@@ -124,6 +136,18 @@ export default {
         .eq('category', `${newValue.toLowerCase()}`)
       this.slideItems = Products
       this.$store.dispatch('setProducts', Products)
+      this.$store.dispatch('setSnackbar', {
+        show: true,
+        content: `All ${newValue} products retrieved`,
+        color: 'success',
+      })
+      if (error) {
+        this.$store.dispatch('setSnackbar', {
+          show: true,
+          content: 'Error retreiving products',
+          color: 'error',
+        })
+      }
     },
   },
 
@@ -131,13 +155,6 @@ export default {
     products() {
       return this.$store.state.products
     },
-
-    // categoryItems() {
-    //   let items = this.products.filter((el) => {
-    //     return el.category == this.select.toLowerCase()
-    //   })
-    //   return items
-    // },
   },
 
   mounted() {
@@ -146,7 +163,6 @@ export default {
 
   methods: {
     addToCart(product) {
-      console.log(this.$snipcart)
       this.$store.dispatch('addToCart', {
         product: product.id,
         quantity: 1,

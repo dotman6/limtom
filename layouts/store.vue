@@ -8,6 +8,7 @@
         class="snipcart-total-price ml-3 font-semibold text-sm text-indigo-500"
       ></span>
     </v-app-bar>
+    <notify />
     <v-main app>
       <v-container>
         <nuxt />
@@ -18,9 +19,11 @@
 
 <script>
 import Cart from '~/components/Cart.vue'
+import Notify from '~/components/Notification.vue'
 export default {
   components: {
     Cart,
+    Notify,
   },
   data() {
     return {
