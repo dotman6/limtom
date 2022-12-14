@@ -38,6 +38,17 @@ export default {
     '@nuxtjs/vuetify',
   ],
 
+  env: {
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    API_KEY: process.env.API_KEY,
+    SERVICE_ROLE: process.env.SERVICE_ROLE,
+    SMTP_HOST: process.env.SMTP_PORT,
+    SMTP_USERNAME: process.env.SMTP_USERNAME,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+    CONTACT_MAIL: process.env.CONTACT_MAIL,
+  },
+
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     '@nuxtjs/snipcart',
@@ -100,14 +111,4 @@ export default {
     ['data-config-modal-style', 'side'],
     // ['data-config-add-product-behavior', 'none']
   ],
-  env: {
-    supabaseUrl: process.env.SUPABASE_URL,
-    apiKey: process.env.API_KEY,
-    serviceRole: process.env.SERVICE_ROLE,
-    smtpHost: process.env.SMTP_HOST,
-    smtpPort: process.env.SMTP_PORT,
-    smtpUsername: process.env.SMTP_USERNAME,
-    smtpPassword: process.env.SMTP_PASSWORD,
-    contactMail: process.env.CONTACT_MAIL,
-  },
 }
