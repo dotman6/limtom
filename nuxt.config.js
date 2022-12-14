@@ -100,4 +100,14 @@ export default {
     ['data-config-modal-style', 'side'],
     // ['data-config-add-product-behavior', 'none']
   ],
+  env: {
+    supabaseUrl: process.env.SUPABASE_URL,
+    apiKey: process.env.API_KEY,
+    serviceRole: process.env.SERVICE_ROLE,
+    smtpHost: process.env.SMTP_HOST,
+    smtpPort: process.env.SMTP_PORT,
+    smtpUsername: process.env.SMTP_USERNAME,
+    smtpPassword: process.env.SMTP_PASSWORD,
+    contactMail: process.env.CONTACT_MAIL,
+  },
 }
