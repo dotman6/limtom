@@ -30,7 +30,7 @@
           :data-item-price="product.price"
           :data-item-image="product.image_url"
           :data-item-description="product.description"
-          :data-item-url="`${this.$route.fullPath}`"
+          :data-item-url="`products/${this.$route.params.id}`"
         >
           Add to cart
         </v-btn>

@@ -78,8 +78,11 @@ export default {
     }
   },
   methods: {
-    logout() {
-      this.$router.push('/auth/login')
+    async logout() {
+      let { error } = await this.$supabase.auth.signOut()
+      if (!error) {
+        this.$router.push('/auth/login')
+      }
     },
 
     async checkUser() {

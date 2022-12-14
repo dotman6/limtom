@@ -1,5 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
-
+require('dotenv').config()
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -39,7 +39,28 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['@nuxtjs/snipcart'],
+  modules: [
+    '@nuxtjs/snipcart',
+    '@nuxtjs/dotenv',
+    '@nuxtjs/axios',
+    [
+      'nuxt-mail',
+      {
+        message: [
+          { name: 'contact', to: process.env.CONTACT_MAIL },
+          // { name: 'support', to: 'support@foo.de' },
+        ],
+        smtp: {
+          host: process.env.SMTP_HOST,
+          port: process.env.SMTP_PORT,
+          auth: {
+            user: process.env.SMTP_USERNAME,
+            pass: process.env.SMTP_PASSWORD,
+          },
+        },
+      },
+    ],
+  ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
