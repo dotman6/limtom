@@ -21,6 +21,7 @@
       <v-card-text class="pa-0 pl-16 pr-16"> </v-card-text>
       <v-card-actions class="pt-5 pb-5 justify-center">
         <v-btn
+          nuxt
           color="blue darken-1"
           small
           outlined
