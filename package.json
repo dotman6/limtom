@@ -15,6 +15,7 @@
     "@supabase/supabase-js": "^2.1.2",
     "core-js": "^3.9.1",
     "nuxt": "^2.15.3",
+    "nuxt-leaflet": "^0.0.27",
     "nuxt-mail": "^3.0.23"
   },
   "devDependencies": {

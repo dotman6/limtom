@@ -25,7 +25,6 @@
           color="blue darken-1"
           small
           outlined
-          :to="`${this.$route.params.id}`"
           class="snipcart-add-item text-capitalize pl-10 pr-10 block"
           :data-item-id="product.id"
           :data-item-name="product.product_name"

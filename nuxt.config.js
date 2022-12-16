@@ -54,6 +54,7 @@ export default {
     '@nuxtjs/snipcart',
     '@nuxtjs/dotenv',
     '@nuxtjs/axios',
+    'nuxt-leaflet',
     [
       'nuxt-mail',
       {

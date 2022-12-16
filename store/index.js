@@ -11,6 +11,7 @@ export const state = () => ({
   editedItem: {},
   defaultItem: {},
   editedIndex: -1,
+  driverLocation: [7.1379161, 3.3389562],
 })
 
 export const getters = {
@@ -76,6 +77,10 @@ export const mutations = {
   DELETE_ITEM(state, payload) {
     return state.products.splice(payload, 1)
   },
+
+  SET_DRIVER_LOCATION(state, payload) {
+    return (state.driverLocation = payload)
+  },
 }
 
 export const actions = {
@@ -113,5 +118,9 @@ export const actions = {
 
   saveEdits({ commit }, payload) {
     commit('SAVE_EDITS', payload)
+  },
+
+  setDriverLocation({ commit }, payload) {
+    commit('SET_DRIVER_LOCATION', payload)
   },
 }
