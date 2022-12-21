@@ -12,9 +12,9 @@
     <v-tab class="text-capitalize font-weight-bold black--text my-tab" active>
       List-view
     </v-tab>
-    <v-tab class="text-capitalize font-weight-bold black--text my-tab">
+    <!-- <v-tab class="text-capitalize font-weight-bold black--text my-tab">
       Map-view
-    </v-tab>
+    </v-tab> -->
     <v-tab-item class="">
       <v-data-table
         :headers="headers"
@@ -55,7 +55,7 @@
         </template>
       </v-data-table>
     </v-tab-item>
-    <v-tab-item class="">
+    <!-- <v-tab-item class="">
       <div id="map" style="height: 80vh;">
         <client-only>
           <l-map :zoom="zoom" ref="map" :center="center">
@@ -71,11 +71,7 @@
               :key="index"
               @click="openPopUp(location, $event)"
             ></l-marker>
-            <l-marker
-              :lat-lng="$store.state.driverLocation"
-              ref="driver"
-              @ready="track()"
-            >
+            <l-marker :lat-lng="center">
               <l-icon
                 icon-url="https://harrywood.co.uk/maps/examples/leaflet/marker-icon-red.png"
               >
@@ -85,22 +81,13 @@
           </l-map>
         </client-only>
       </div>
-    </v-tab-item>
+    </v-tab-item> -->
   </v-tabs>
 </template>
 <script>
-import { map } from 'leaflet'
-
 export default {
   data() {
     return {
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      attribution:
-        '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      zoom: 10,
-      center: [6.601838, 3.3514863],
-      caller: null,
-      // markerLatLng: [7.1379161, 3.3389562],
       headers: [
         { text: 'Customer Name', value: 'customer_name', align: 'center' },
         { text: 'Items', value: 'items', align: 'center' },
@@ -109,20 +96,11 @@ export default {
         { text: 'Delivery Status', value: 'delivery_status', align: 'center' },
       ],
       orders: [],
-      orderLocations: [],
-      layer: null,
-      currentDriverLocation: null,
     }
   },
   created() {
     this.initialize()
   },
-
-  // mounted() {
-  //   this.$nextTick(() => {
-  //     console.log(this.$refs.map)
-  //   })
-  // },
 
   methods: {
     async initialize() {
@@ -143,7 +121,7 @@ export default {
         })
       }
       this.orders = orders
-      this.getLocation(this.orders)
+      // this.getLocation(this.orders)
 
       //Create a layer from the points
       // console.log(this.$L.layerGroup(this.orderLocations))
@@ -152,27 +130,22 @@ export default {
       if (item == false) return 'red'
       else return 'green'
     },
-    getLocation(arr) {
-      for (const item of arr) {
-        let longitude = item.billing_address.longitude
-        let latitude = item.billing_address.latitude
-        this.orderLocations.push([latitude, longitude])
-      }
-      const layerGroup = this.$L.layerGroup(this.orderLocations)
-    },
-
-    track() {
-      return (this.currentDriverLocation = this.$store.state.driverLocation)
-    },
+    // getLocation(arr) {
+    //   for (const item of arr) {
+    //     let longitude = item.billing_address.longitude
+    //     let latitude = item.billing_address.latitude
+    //     this.orderLocations.push([latitude, longitude])
+    //   }
+    // },
 
     // getMap() {
     //   console.log(this.$refs.map.addLayer())
     // },
 
-    openPopUp(latLng) {
-      // this.caller = caller
-      this.$refs.features.mapObject.openPopup(latLng)
-    },
+    // openPopUp(latLng) {
+    //   // this.caller = caller
+    //   this.$refs.features.mapObject.openPopup(latLng)
+    // },
 
     // switchChange(item) {
     //   const order = item
@@ -200,5 +173,22 @@ export default {
       return this.$store.getters.getProducts
     },
   },
+
+  // mounted() {
+  //   // Listen to broadcast messages.
+  //   this.$supabase
+  //     .channel('currentLocation')
+  //     .on(
+  //       'broadcast',
+  //       { event: 'cursor-pos' },
+  //       (payload) => (this.center = payload.payload)
+  //       // console.log(payload)
+  //     )
+  //     .subscribe((status) => {
+  //       if (status === 'SUBSCRIBED') {
+  //         // your callback function will now be called with the messages broadcast by the other client
+  //       }
+  //     })
+  // },
 }
 </script>

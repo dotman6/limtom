@@ -6,12 +6,18 @@
       <client-only>
         <l-map :zoom="zoom" ref="map" :center="center">
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+          <l-layer-group ref="features">
+            <l-popup>
+              <span> Yay I was opened by {{ caller }}</span></l-popup
+            >
+          </l-layer-group>
           <l-marker
-            :lat-lng="center"
-            draggable
-            ref="driver"
-            @drag="track($event)"
-          >
+            :lat-lng="location"
+            v-for="(location, index) in orderLocations"
+            :key="index"
+            @click="openPopUp(location, $event)"
+          ></l-marker>
+          <l-marker :lat-lng="center" ref="driver">
             <l-icon
               icon-url="https://harrywood.co.uk/maps/examples/leaflet/marker-icon-red.png"
               :icon-size="dynamicSize"
@@ -51,15 +57,17 @@ export default {
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       attribution:
         '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      zoom: 10,
+      zoom: 13,
       center: [7.1379161, 3.3389562],
-      iconUrl: '/assets/truck-1.1s-200px.svg',
-      // icon: L.icon({
-      //   iconUrl: '/images/baseball-marker.png',
       iconSize: [32, 37],
       iconAnchor: [16, 37],
-      // }),
+      orders: [],
+      orderLocations: [],
+      caller: null,
     }
+  },
+  created() {
+    this.initialize()
   },
 
   computed: {
@@ -72,12 +80,61 @@ export default {
   },
 
   methods: {
-    track(event) {
-      let lat = event.latlng.lat
-      let lng = event.latlng.lng
-      this.$store.dispatch('setDriverLocation', [lat, lng])
-      console.log(lat, lng)
+    async initialize() {
+      const { data: orders, error } = await this.$supabase
+        .from('orders')
+        .select('*')
+      //   this.$store.dispatch('setProducts', Products)
+      this.$store.dispatch('setSnackbar', {
+        show: true,
+        content: `All orders retrieved`,
+        color: 'success',
+      })
+      if (error) {
+        this.$store.dispatch('setSnackbar', {
+          show: true,
+          content: 'Error retrieving orders',
+          color: 'error',
+        })
+      }
+      this.orders = orders
+      this.getLocation(this.orders)
+
+      //Create a layer from the points
+      // console.log(this.$L.layerGroup(this.orderLocations))
     },
+    getColor(item) {
+      if (item == false) return 'red'
+      else return 'green'
+    },
+    getLocation(arr) {
+      for (const item of arr) {
+        let longitude = item.billing_address.longitude
+        let latitude = item.billing_address.latitude
+        this.orderLocations.push([latitude, longitude])
+      }
+    },
+
+    openPopUp(latLng) {
+      // this.caller = caller
+      this.$refs.features.mapObject.openPopup(latLng)
+    },
+  },
+  mounted() {
+    // Listen to broadcast messages.
+    this.$supabase
+      .channel('currentLocation')
+      .on(
+        'broadcast',
+        { event: 'cursor-pos' },
+        (payload) => (this.center = payload.payload)
+        // console.log(payload)
+      )
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          // your callback function will now be called with the messages broadcast by the other client
+        }
+      })
   },
 }
 </script>

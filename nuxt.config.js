@@ -99,6 +99,7 @@ export default {
     // Options available
     key:
       'NTMzNzZkNzctM2E1ZS00MGQxLTgyYWYtZjlmMzEyMmRkODdjNjM4MDU3ODQ1ODgzMDIxMzU4',
+    // version: '3.2.2',
     locals: {
       en: {
         cart_summary: {

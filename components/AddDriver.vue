@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="600px">
+  <v-dialog v-model="dialog" persistent max-width="600px" class="dialog">
     <template v-slot:activator="{ on, attrs }">
       <v-btn
         color="primary"
@@ -123,4 +123,8 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.dialog {
+  z-index: 9999;
+}
+</style>
