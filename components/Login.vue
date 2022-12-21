@@ -87,7 +87,8 @@ export default {
             },
           },
         })
-        if (!error) {
+        if (data.user.user_metadata.role === 'admin') {
+          //Check the user data
           this.$router.push('/admin/products')
 
           this.$store.dispatch('setSnackbar', {
@@ -95,6 +96,8 @@ export default {
             content: 'Login successfull',
             color: 'success',
           })
+        } else {
+          this.$router.push('/admin/driver')
         }
 
         if (error) {

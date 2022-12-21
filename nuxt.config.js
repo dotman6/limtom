@@ -47,6 +47,9 @@ export default {
     SMTP_PORT: process.env.SMTP_PORT,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
     CONTACT_MAIL: process.env.CONTACT_MAIL,
+    MAILGUN_API_KEY: process.env.MAILGUN_API_KEY,
+    DOMAIN: process.env.DOMAIN,
+    MAILGUN_URL: process.env.MAILGUN_URL,
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules

@@ -29,6 +29,18 @@
           filled
         ></v-text-field>
 
+        <v-select
+          v-model="select"
+          :items="items"
+          :rules="[(v) => !!v || 'Item is required']"
+          label="Role"
+          required
+          outlined
+          dense
+          clearable
+          filled
+        ></v-select>
+
         <v-btn
           color="success"
           class="signup-btn text-center"
@@ -60,6 +72,7 @@ export default {
         (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
       select: null,
+      items: ['Admin', 'Driver'],
     }
   },
 
@@ -71,7 +84,7 @@ export default {
           password: this.password,
           options: {
             data: {
-              role: 'admin',
+              role: this.select,
             },
           },
         })
@@ -90,7 +103,6 @@ export default {
           })
           this.$router.push('/auth/confirmation')
         }
-        console.log(data)
       }
     },
     reset() {

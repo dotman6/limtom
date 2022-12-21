@@ -190,14 +190,6 @@ export default {
 
   methods: {
     loadAllProducts() {
-      this.$mail.send({
-        from: process.env.SMTP_USERNAME,
-        subject: 'Contact form message',
-        text: 'Hello just testing message',
-        to: 'horlartom2013@gmail.com',
-      })
-      console.log(this.$mail)
-
       this.$router.push('/admin/allproducts')
     },
   },

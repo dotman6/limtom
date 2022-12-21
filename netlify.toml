@@ -1,2 +1,6 @@
-[[dev]]
-f
+[dev]
+   command = "npm run dev"
+
+[build]
+  command = "npm run generate"
+  functions = "functions"

@@ -3,8 +3,8 @@
     <section class="top-bar">
       <div v-if="user">{{ user.email }}</div>
       <div>Driver</div>
-      <v-btn class="ui v-btn red" @click="signOutButtonPressed">
-        Signout
+      <v-btn class="ui v-btn red" @click="logOutButtonPressed">
+        logout
       </v-btn>
     </section>
 
@@ -69,14 +69,19 @@ export default {
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       attribution:
         '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+
+      authenticated: false,
+      authListener: null,
     }
   },
 
-  //   mounted() {
-  //     firebase.auth().onAuthStateChanged((user) => {
-  //       this.user = user
-  //     })
-  //   },
+  mounted() {
+    const { data: authListener } = this.$supabase.auth.onAuthStateChange(() =>
+      this.checkUser()
+    )
+    this.authListener = authListener
+    this.checkUser()
+  },
   created() {
     this.initialize()
   },
@@ -159,24 +164,20 @@ export default {
       navigator.geolocation.clearWatch(this.watchPositionId)
     },
 
-    signOutButtonPressed() {
-      firebase
-        .auth()
-        .signOut()
-        .then((user) => {
-          this.$router.push({
-            name: 'Signin',
-          })
-        })
-        .catch((error) => {
-          console.log(error.message)
-        })
+    async logOutButtonPressed() {
+      let { error } = await this.$supabase.auth.signOut()
+      if (!error) {
+        this.$router.push('/auth/login')
+      }
     },
-    updateLocation(lat, lng) {
-      const db = firebase.firestore()
-      db.collection('users')
-        .doc(this.user.uid)
-        .set({ lat: lat, lng: lng, active: true }, { merge: true })
+    async checkUser() {
+      const user = await this.$supabase.auth.getUser()
+      if (user) {
+        this.authenticated = true
+        this.user = user.data.user
+      } else {
+        this.authenticated = false
+      }
     },
   },
 }
