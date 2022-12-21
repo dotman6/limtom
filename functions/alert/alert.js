@@ -8,7 +8,7 @@ const mailgun = require('mailgun-js')({
   url: process.env.MAILGUN_URL,
 })
 
-exports.handler = schedule('*****', async (event) => {
+exports.handler = schedule('* * * * *', async (event) => {
   //Look-up for the products from the database
   let { data: Products, error } = await supabase.from('Products').select('*')
 
