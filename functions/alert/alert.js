@@ -1,5 +1,5 @@
 const createClient = require('@supabase/supabase-js').createClient
-// const { schedule } = require('@netlify/functions')
+const { schedule } = require('@netlify/functions')
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.API_KEY)
 const mailgun = require('mailgun-js')({
@@ -75,7 +75,7 @@ const sendEmail = async () => {
   return res
 }
 
-exports.handler = async (event) => {
+exports.handler = schedule(async (event) => {
   // Only allow POST
   //   if (event.httpMethod !== 'POST') {
   //     return { statusCode: 405, body: 'Method Not Allowed' }
@@ -93,4 +93,4 @@ exports.handler = async (event) => {
       body: err.message || err,
     }
   }
-}
+})
