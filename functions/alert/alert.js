@@ -75,7 +75,7 @@ const sendEmail = async () => {
   return res
 }
 
-exports.handler = schedule(async (event) => {
+exports.handler = schedule('0 8 * * *', async (event) => {
   // Only allow POST
   //   if (event.httpMethod !== 'POST') {
   //     return { statusCode: 405, body: 'Method Not Allowed' }
