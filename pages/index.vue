@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center" align="center">
     <div class="d-flex flex-column text-center">
-      <h4 class="text-h6 mt-4 font-weight-thin blue--text">
+      <h4 class="text-md-h4 text-h6 primary--text mt-4">
         Explore variety of products from our online store
       </h4>
       <h6 class="text-body-1 font-italic pt-1">
@@ -20,62 +20,38 @@
           :rules="[(v) => !!v || 'Field is required']"
         ></v-select
       ></v-col>
-      <v-sheet class="mx-auto" elevation="8" max-width="1200">
-        <v-slide-group
-          v-model="modal"
-          class="pa-3"
-          active-class="success"
-          show-arrows
-        >
-          <v-slide-item v-for="(product, i) in slideItems" :key="i">
-            <nuxt-link
-              :to="`products/${product.id}`"
-              class="text-decoration-none"
+      <v-slide-group>
+        <v-slide-item v-for="(product, i) in slideItems" :key="i">
+          <v-card
+            nuxt
+            :to="`/products/${product.id}`"
+            color="surface"
+            width="300"
+            class="el ma-2 mb-5 mr-5 justify-center"
+          >
+            <v-img :src="product.image_url" height="250" contain>
+              <template #placeholder>
+                <v-row class="fill-height" justify="center" align="center">
+                  <v-progress-circular
+                    width="2"
+                    size="100"
+                    color="primary"
+                    indeterminate
+                  ></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
+            <v-card-title
+              class="text-md-body-1 font-weight-bold justify-self-center"
+              >{{ product.product_name }}</v-card-title
             >
-              <v-card class="ma-4" width="250">
-                <v-img
-                  height="150"
-                  :src="product.image_url"
-                  :alt="product.product_name"
-                  contain
-                ></v-img>
-
-                <v-card-title class="text-subtitle-2 pa-2 text-truncate">
-                  {{ product.product_name }}
-                </v-card-title>
-
-                <v-card-text class="pa-5">
-                  <div
-                    class="price-text text-center blue--text font-weight-light"
-                  >
-                    <span class="">&#8358;</span>
-                    {{ product.price
-                    }}<span class="ml-2 text-caption">Per Carton</span>
-                  </div>
-                </v-card-text>
-                <v-card-text class="pa-0 pl-16 pr-16"> </v-card-text>
-                <!-- <v-card-actions class="pt-5 pb-5 justify-center">
-                <v-btn
-                  color="blue darken-1"
-                  small
-                  outlined
-                  class="text-capitalize snipcart-add-item pl-10 pr-10 block"
-                  :data-item-id="product.id"
-                  :data-item-name="product.product_name"
-                  :data-item-price="product.price"
-                  :data-item-image="product.image_url"
-                  :data-item-description="product.description"
-                  :data-item-url="`https://smart-supply-store.netlify.app${product.id}`"
-                >
-                  Add to cart
-                </v-btn>
-              </v-card-actions> -->
-              </v-card>
-            </nuxt-link>
-          </v-slide-item>
-        </v-slide-group>
-      </v-sheet></v-col
-    >
+            <v-card-subtitle class="primary--text pb-3 text-h5 mt-2">
+              {{ $formatMoney(product.price) }}
+            </v-card-subtitle>
+          </v-card>
+        </v-slide-item>
+      </v-slide-group>
+    </v-col>
   </v-row>
 </template>
 
@@ -113,11 +89,6 @@ export default {
       .eq('category', `${this.select.toLowerCase()}`)
     this.slideItems = Products
     this.$store.dispatch('setProducts', Products)
-    this.$store.dispatch('setSnackbar', {
-      show: true,
-      content: `All ${this.select} products retrieved`,
-      color: 'success',
-    })
     if (error) {
       this.$store.dispatch('setSnackbar', {
         show: true,
@@ -136,11 +107,6 @@ export default {
         .eq('category', `${newValue.toLowerCase()}`)
       this.slideItems = Products
       this.$store.dispatch('setProducts', Products)
-      this.$store.dispatch('setSnackbar', {
-        show: true,
-        content: `All ${newValue} products retrieved`,
-        color: 'success',
-      })
       if (error) {
         this.$store.dispatch('setSnackbar', {
           show: true,
@@ -171,7 +137,7 @@ export default {
   },
 }
 </script>
-<style lang="css">
+<style lang="css" scoped>
 .price-text {
   font-size: 20px;
   letter-spacing: 0.5;

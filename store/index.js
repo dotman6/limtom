@@ -42,19 +42,11 @@ export const getters = {
   },
 }
 
+//ALL MUTATION FOR THE STORE
 export const mutations = {
   SET_PRODUCTS(state, products) {
     return (state.products = products)
   },
-
-  SET_CART_DIALOG(state) {
-    return (state.dialog = true)
-  },
-
-  ADD_TO_CART(state, { product, quantity }) {
-    return state.cart.push({ product, quantity })
-  },
-
   SET_SNACKBAR(state, payload) {
     return (state.snackbar = payload)
   },
@@ -81,6 +73,100 @@ export const mutations = {
   SET_DRIVER_LOCATION(state, payload) {
     return (state.driverLocation = payload)
   },
+
+  //CART RELATED MUTATIONS
+  SET_CART_DIALOG(state) {
+    return (state.dialog = true)
+  },
+
+  LOAD_CART(state) {
+    //Get existing cart in the localstorage
+    let cart = localStorage.getItem('myCart')
+    if (cart) {
+      state.cart = JSON.parse(cart)
+      console.log(JSON.parse(cart))
+    }
+  },
+
+  ADD_TO_CART(state, product) {
+    //Check if cart already exist
+    let itemFound = state.cart.find((p) => {
+      return p.product.id === product.id
+    })
+
+    //If not found add the product to cart
+    if (!itemFound) {
+      state.cart.push({ product, quantity: 1 })
+    }
+    //If found increase the quantity
+    if (itemFound) {
+      itemFound.quantity += 1
+    }
+
+    //Update the localstorage
+    localStorage.setItem('myCart', JSON.stringify(state.cart))
+    this.$swal({
+      toast: true,
+      text: 'Cart Updated.',
+      icon: 'success',
+      timer: 4000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+      position: 'top-end',
+    })
+  },
+
+  DECREASE_ITEM_COUNT(state, index) {
+    let item = state.cart[index]
+    if (!item) return
+    if (item.quantity === 1) {
+      state.cart.splice(index, 1)
+    } else {
+      item.quantity -= 1
+    }
+    this.$swal({
+      toast: true,
+      text: 'Cart Updated.',
+      icon: 'success',
+      timer: 4000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+      position: 'top-end',
+    })
+
+    //Update the localstorage
+    localStorage.setItem('myCart', JSON.stringify(state.cart))
+  },
+
+  REMOVE_CART_ITEM(state, index) {
+    state.cart.splice(index, 1)
+    this.$swal({
+      toast: true,
+      text: 'Cart Updated.',
+      icon: 'success',
+      timer: 4000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+      position: 'top-end',
+    })
+
+    //Update the localstorage
+    localStorage.setItem('myCart', JSON.stringify(state.cart))
+  },
+
+  INCREASE_ITEM_COUNT(state, index) {
+    let item = state.cart[index]
+    item.quantity += 1
+
+    //Update the localstorage
+    localStorage.setItem('myCart', JSON.stringify(state.cart))
+  },
+
+  CLEAR_CART(state) {
+    state.cart = []
+    //Remove cart from localstorage
+    localStorage.removeItem('myCart')
+  },
 }
 
 export const actions = {
@@ -92,8 +178,8 @@ export const actions = {
     commit('SET_CART_DIALOG')
   },
 
-  addToCart({ commit }, { product, quantity }) {
-    commit('ADD_TO_CART', { product, quantity })
+  addToCart({ commit }, product) {
+    commit('ADD_TO_CART', product)
   },
 
   setSnackbar({ commit }, payload) {

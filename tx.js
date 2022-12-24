@@ -44,11 +44,14 @@ const getProducts = async () => {
   return rows
 }
 
-const mailgunData = {
-  from: 'horlartom@live.com',
-  to: 'horlartom2013@gmail.com',
-  subject: `New mail from `,
-  html: `<html>
+const sendEmail = async () => {
+  console.log('Sending email')
+
+  const res = await mg.messages.create(process.env.DOMAIN, {
+    from: 'horlartom@live.com',
+    to: 'horlartom2013@gmail.com',
+    subject: `New mail from `,
+    html: `<html>
         <body>
           <h1 style="padding:30px; text-decoration:underline; text-align:center;">List of product abouts to expires</h1>
            <table style="border: 1px solid black border-collapse: collapse width:50%; margin:auto;">
@@ -66,23 +69,18 @@ const mailgunData = {
         </body>
       </html>
     `,
-}
-
-const sendEmail = async () => {
-  console.log('Sending email')
-
-  const res = await mailgun.messages().send(mailgunData)
+  })
   return res
 }
 
-exports.handler = async (event) => {
+export async function handler(event) {
   // Only allow POST
   //   if (event.httpMethod !== 'POST') {
   //     return { statusCode: 405, body: 'Method Not Allowed' }
   //   }
 
   try {
-    sendEmail()
+    await sendEmail()
     return {
       statusCode: 200,
       body: 'Email sent!',

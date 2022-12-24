@@ -24,10 +24,10 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: ['@sweetalert2/theme-material-ui', '~/assets/main.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [{ src: '~plugins/client.js' }],
+  plugins: [{ src: '~plugins/client.js' }, { src: '~plugins/cart.js' }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -54,10 +54,11 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    '@nuxtjs/snipcart',
     '@nuxtjs/dotenv',
     '@nuxtjs/axios',
     'nuxt-leaflet',
+    'vue-sweetalert2/nuxt/no-css',
+    'nuxt-webfontloader',
     [
       'nuxt-mail',
       {
@@ -76,15 +77,39 @@ export default {
       },
     ],
   ],
-
+  webfontloader: {
+    google: {
+      families: ['DM+Sans:wght@400;500;700&display=swap'],
+    },
+  },
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
+    defaultAssets: {
+      font: {
+        family: 'DM Sans',
+        size: 15,
+      },
+    },
+    treeShake: true,
     theme: {
-      dark: false,
+      light: true,
       themes: {
+        light: {
+          primary: colors.deepPurple.darken1,
+          bg: '#ffffff',
+          surface: '#ffffff',
+          accent: colors.grey.darken3,
+          secondary: colors.amber.darken3,
+          info: colors.teal.lighten1,
+          warning: colors.amber.base,
+          error: colors.deepOrange.accent4,
+          success: colors.green.accent3,
+        },
         dark: {
-          primary: colors.blue.darken2,
+          primary: colors.deepPurple.darken1,
+          bg: '#0a0514',
+          surface: '#130a24',
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
@@ -98,22 +123,4 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
-  snipcart: {
-    // Options available
-    key:
-      'NTMzNzZkNzctM2E1ZS00MGQxLTgyYWYtZjlmMzEyMmRkODdjNjM4MDU3ODQ1ODgzMDIxMzU4',
-    // version: '3.2.2',
-    locals: {
-      en: {
-        cart_summary: {
-          total: "We're Total en",
-        },
-      },
-    },
-  },
-
-  attributes: [
-    ['data-config-modal-style', 'side'],
-    // ['data-config-add-product-behavior', 'none']
-  ],
 }

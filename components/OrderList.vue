@@ -12,9 +12,6 @@
     <v-tab class="text-capitalize font-weight-bold black--text my-tab" active>
       List-view
     </v-tab>
-    <!-- <v-tab class="text-capitalize font-weight-bold black--text my-tab">
-      Map-view
-    </v-tab> -->
     <v-tab-item class="">
       <v-data-table
         :headers="headers"
@@ -27,9 +24,9 @@
           <div v-for="item in item.items" :key="item.id">
             <ul>
               <li>
-                {{ item.product_name }} : {{ item.quantity }} x
-                {{ item.price }} =
-                {{ item.total_price }}
+                {{ item.product.product_name }} : {{ item.quantity }} x
+                {{ item.product.price }} =
+                {{ item.quantity * item.product.price }}
               </li>
             </ul>
           </div>
@@ -55,33 +52,6 @@
         </template>
       </v-data-table>
     </v-tab-item>
-    <!-- <v-tab-item class="">
-      <div id="map" style="height: 80vh;">
-        <client-only>
-          <l-map :zoom="zoom" ref="map" :center="center">
-            <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-            <l-layer-group ref="features">
-              <l-popup>
-                <span> Yay I was opened by {{ caller }}</span></l-popup
-              >
-            </l-layer-group>
-            <l-marker
-              :lat-lng="location"
-              v-for="(location, index) in orderLocations"
-              :key="index"
-              @click="openPopUp(location, $event)"
-            ></l-marker>
-            <l-marker :lat-lng="center">
-              <l-icon
-                icon-url="https://harrywood.co.uk/maps/examples/leaflet/marker-icon-red.png"
-              >
-              </l-icon>
-            </l-marker>
-            <l-control-layers position="topright"></l-control-layers>
-          </l-map>
-        </client-only>
-      </div>
-    </v-tab-item> -->
   </v-tabs>
 </template>
 <script>
@@ -130,44 +100,45 @@ export default {
       if (item == false) return 'red'
       else return 'green'
     },
-    // getLocation(arr) {
-    //   for (const item of arr) {
-    //     let longitude = item.billing_address.longitude
-    //     let latitude = item.billing_address.latitude
-    //     this.orderLocations.push([latitude, longitude])
-    //   }
-    // },
-
-    // getMap() {
-    //   console.log(this.$refs.map.addLayer())
-    // },
 
     // openPopUp(latLng) {
     //   // this.caller = caller
     //   this.$refs.features.mapObject.openPopup(latLng)
     // },
 
-    // switchChange(item) {
-    //   const order = item
-    //   const productOrdered = this.getProducts.filter((product) =>
-    //     order.items.some(
-    //       (item) => item.name === product.name && item.id === product.id
-    //     )
-    //   )
+    switchChange(item) {
+      const order = item
+      console.log(order)
+      const filteredHobbies = this.getProducts.filter((product) => {
+        return order.items.some(
+          (item) => item.product.product_name === product.product_name
+        )
+      })
 
-    //   const itemsWithinOrder = order.items
-    //   const rem = productOrdered.forEach((product) => {
-    //     return product.quantity_in_stock
-    //     // return itemsWithinOrder.forEach((it) => {
-    //     //   return product.quantity_in_stock
-    //     // })
-    //   })
-    //   //Update the order table
-    //   console.log(rem)
-    //   console.log(productOrdered)
-    // },
+      console.log(filteredHobbies)
+
+      // const productOrdered = this.getProducts.filter((product) =>
+      //   order.items.some(
+      //     (item) =>
+      //       item[product].product_name === product.name &&
+      //       item[product].id === product.id
+      //   )
+      // )
+      // console.log(order)
+
+      //   const itemsWithinOrder = order.items
+      //   const rem = productOrdered.forEach((product) => {
+      //     return product.quantity_in_stock
+      //     // return itemsWithinOrder.forEach((it) => {
+      //     //   return product.quantity_in_stock
+      //     // })
+      //   })
+      //   //Update the order table
+      //   console.log(rem)
+      //   console.log(productOrdered)
+      // },
+    },
   },
-
   computed: {
     getProducts() {
       return this.$store.getters.getProducts

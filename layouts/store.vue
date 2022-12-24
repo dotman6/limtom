@@ -1,12 +1,40 @@
 <template>
   <v-app>
-    <v-app-bar fixed flat app>
-      <v-toolbar-title v-text="title" />
+    <v-app-bar
+      color="surface"
+      height="80"
+      class="el"
+      :style="{
+        padding: $vuetify.breakpoint.mdAndUp ? '0px 100px' : '',
+      }"
+      app
+    >
+      <v-toolbar-title
+        @click="$router.push('/')"
+        class="text-md-h5 font-weight-bold pointer"
+        >Mike&Cole Store</v-toolbar-title
+      >
       <v-spacer />
-      <Cart />
-      <span
-        class="snipcart-total-price ml-3 font-semibold text-sm text-indigo-500"
-      ></span>
+
+      <v-btn nuxt to="/" class="mr-md-2" icon>
+        <v-icon size="20">mdi-store-outline</v-icon>
+      </v-btn>
+      <v-badge
+        v-if="$store.state.cart.length > 0"
+        overlap
+        :content="`${$store.state.cart.length}`"
+      >
+        <v-btn nuxt to="/cart" icon>
+          <v-icon size="20">mdi-cart-outline</v-icon>
+        </v-btn>
+      </v-badge>
+      <v-btn v-else nuxt to="/cart" icon>
+        <v-icon size="20">mdi-cart-outline</v-icon>
+      </v-btn>
+      <v-divider vertical class="mx-md-5 mx-2" />
+      <v-btn @click="toggleTheme" icon>
+        <v-icon size="20">mdi-brightness-7</v-icon>
+      </v-btn>
     </v-app-bar>
     <notify />
     <v-main app>
@@ -21,6 +49,7 @@
 import Cart from '~/components/Cart.vue'
 import Notify from '~/components/Notification.vue'
 export default {
+  name: 'Store',
   components: {
     Cart,
     Notify,
@@ -35,6 +64,9 @@ export default {
   methods: {
     logout() {
       console.log(this.$supabase)
+    },
+    toggleTheme() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
     },
   },
 }
