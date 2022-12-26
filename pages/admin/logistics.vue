@@ -1,22 +1,20 @@
 <template>
   <div>
-    <p>{{ `This is the ${this.$route.name} page` }}</p>
     <add-driver />
     <div id="map2" style="height: 80vh;">
       <client-only>
-        <l-map :zoom="zoom" ref="map" :center="center">
+        <l-map
+          :zoom="zoom"
+          ref="map"
+          :center="center"
+          style="position: relative;"
+        >
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-          <l-layer-group ref="features">
-            <l-popup>
-              <span> Yay I was opened by {{ caller }}</span></l-popup
-            >
-          </l-layer-group>
-          <l-marker
-            :lat-lng="location"
-            v-for="(location, index) in orderLocations"
-            :key="index"
-            @click="openPopUp(location, $event)"
-          ></l-marker>
+          <l-geo-json
+            :geojson="geoJson"
+            v-if="geoJson"
+            :options="options"
+          ></l-geo-json>
           <l-marker :lat-lng="center" ref="driver">
             <l-icon
               icon-url="https://harrywood.co.uk/maps/examples/leaflet/marker-icon-red.png"
@@ -64,6 +62,7 @@ export default {
       orders: [],
       orderLocations: [],
       caller: null,
+      geoJson: null,
     }
   },
   created() {
@@ -77,6 +76,29 @@ export default {
     dynamicAnchor() {
       return [this.iconSize / 2, this.iconSize * 1.15]
     },
+
+    options() {
+      return {
+        onEachFeature: this.onEachFeatureFunction,
+      }
+    },
+    onEachFeatureFunction() {
+      return (feature, layer) => {
+        layer.bindPopup(
+          `<p ref="mine" class="mt-0 mb-0 text-subtitle-1 text-center font-weight-bold text-capitalize">Name:
+            ${feature.properties.customer_name}</p>
+            <p class="mt-2 mb-2 text-subtitle-2 text-center font-weight-bold">Email:
+            ${feature.properties.email}
+            </p> <p class="mt-2 mb-2 text-subtitle-2 text-center font-weight-bold">Delivery status:
+            ${feature.properties.deliveryStatus}
+            </p>`,
+          {
+            permanent: false,
+            sticky: true,
+          }
+        )
+      }
+    },
   },
 
   methods: {
@@ -85,11 +107,6 @@ export default {
         .from('orders')
         .select('*')
       //   this.$store.dispatch('setProducts', Products)
-      this.$store.dispatch('setSnackbar', {
-        show: true,
-        content: `All orders retrieved`,
-        color: 'success',
-      })
       if (error) {
         this.$store.dispatch('setSnackbar', {
           show: true,
@@ -99,9 +116,7 @@ export default {
       }
       this.orders = orders
       this.getLocation(this.orders)
-
-      //Create a layer from the points
-      // console.log(this.$L.layerGroup(this.orderLocations))
+      this.geoJson = this.convertToGeoJSON(this.orders)
     },
     getColor(item) {
       if (item == false) return 'red'
@@ -113,6 +128,33 @@ export default {
         let latitude = item.billing_address.latitude
         this.orderLocations.push([latitude, longitude])
       }
+    },
+
+    convertToGeoJSON(arr) {
+      const geoJSON = {
+        type: 'FeatureCollection',
+        features: [],
+      }
+
+      arr.forEach((item) => {
+        const feature = {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [
+              item.billing_address.longitude,
+              item.billing_address.latitude,
+            ],
+          },
+          properties: {
+            customer_name: item.customer_name,
+            email: item.email,
+            deliveryStatus: item.delivery_status,
+          },
+        }
+        geoJSON.features.push(feature)
+      })
+      return geoJSON
     },
 
     openPopUp(latLng) {

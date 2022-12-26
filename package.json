@@ -15,6 +15,7 @@
     "@supabase/supabase-js": "^2.1.2",
     "@sweetalert2/theme-material-ui": "^5.0.15",
     "core-js": "^3.9.1",
+    "geolib": "^3.3.3",
     "mailgun-js": "^0.22.0",
     "nuxt": "^2.15.3",
     "nuxt-leaflet": "^0.0.27",

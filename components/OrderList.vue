@@ -16,7 +16,7 @@
       <v-data-table
         :headers="headers"
         :items="orders"
-        class="elevation-1"
+        class="elevation-1 text-capitalize text-body-1"
         :items-per-page="7"
         align="start"
       >
@@ -40,7 +40,12 @@
         </template>
 
         <template v-slot:[`item.delivery_status`]="{ item }">
-          <v-switch v-model="item.delivery_status" inset dense></v-switch>
+          <v-switch
+            v-model="item.delivery_status"
+            inset
+            dense
+            disabled
+          ></v-switch>
         </template>
         <template v-slot:[`item.approved`]="{ item }">
           <v-switch
@@ -48,6 +53,9 @@
             inset
             dense
             @change="switchChange(item)"
+            :disabled="
+              item.approved ? (isDisabled = true) : (isDisabled = false)
+            "
           ></v-switch>
         </template>
       </v-data-table>
@@ -59,13 +67,40 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'Customer Name', value: 'customer_name', align: 'center' },
-        { text: 'Items', value: 'items', align: 'center' },
-        { text: 'Billing Address', value: 'billing_address', align: 'center' },
-        { text: 'Approved', value: 'approved', align: 'center' },
-        { text: 'Delivery Status', value: 'delivery_status', align: 'center' },
+        {
+          text: 'Customer Name',
+          value: 'customer_name',
+          align: 'center',
+          class: 'text-body-1 font-weight-bold',
+        },
+        {
+          text: 'Items',
+          value: 'items',
+          align: 'center',
+          class: 'text-body-1 font-weight-bold',
+        },
+        {
+          text: 'Billing Address',
+          value: 'billing_address',
+          align: 'center',
+          class: 'text-body-1 font-weight-bold',
+        },
+        {
+          text: 'Approved',
+          value: 'approved',
+          align: 'center',
+          class: 'text-body-1 font-weight-bold',
+        },
+        {
+          text: 'Delivery Status',
+          value: 'delivery_status',
+          align: 'center',
+          class: 'text-body-1 font-weight-bold',
+        },
       ],
       orders: [],
+      updatedProducts: null,
+      isDisabled: false,
     }
   },
   created() {
@@ -77,12 +112,6 @@ export default {
       const { data: orders, error } = await this.$supabase
         .from('orders')
         .select('*')
-      //   this.$store.dispatch('setProducts', Products)
-      this.$store.dispatch('setSnackbar', {
-        show: true,
-        content: `All orders retrieved`,
-        color: 'success',
-      })
       if (error) {
         this.$store.dispatch('setSnackbar', {
           show: true,
@@ -91,52 +120,48 @@ export default {
         })
       }
       this.orders = orders
-      // this.getLocation(this.orders)
-
-      //Create a layer from the points
-      // console.log(this.$L.layerGroup(this.orderLocations))
     },
     getColor(item) {
       if (item == false) return 'red'
       else return 'green'
     },
 
-    // openPopUp(latLng) {
-    //   // this.caller = caller
-    //   this.$refs.features.mapObject.openPopup(latLng)
-    // },
-
-    switchChange(item) {
+    async switchChange(item) {
+      //Update the order table first
+      const { data, error } = await this.$supabase
+        .from('orders')
+        .update({ approved: true })
+        .eq('id', item.id)
+      //Look up for the prduct and update stock
       const order = item
-      console.log(order)
-      const filteredHobbies = this.getProducts.filter((product) => {
-        return order.items.some(
+      const updatedProducts = this.getProducts.map((product) => {
+        const orderItem = order.items.find(
           (item) => item.product.product_name === product.product_name
         )
+        if (orderItem) {
+          return {
+            ...product,
+            quantity_in_stock: product.quantity_in_stock - orderItem.quantity,
+          }
+        }
       })
 
-      console.log(filteredHobbies)
+      this.updatedProducts = updatedProducts.filter(
+        (product) => product !== undefined
+      )
 
-      // const productOrdered = this.getProducts.filter((product) =>
-      //   order.items.some(
-      //     (item) =>
-      //       item[product].product_name === product.name &&
-      //       item[product].id === product.id
-      //   )
-      // )
-      // console.log(order)
+      //Updte the database
+      this.updatedProducts.forEach((product) => {
+        this.updateTable(product)
+      })
+    },
 
-      //   const itemsWithinOrder = order.items
-      //   const rem = productOrdered.forEach((product) => {
-      //     return product.quantity_in_stock
-      //     // return itemsWithinOrder.forEach((it) => {
-      //     //   return product.quantity_in_stock
-      //     // })
-      //   })
-      //   //Update the order table
-      //   console.log(rem)
-      //   console.log(productOrdered)
-      // },
+    async updateTable(product) {
+      const { data, error } = await this.$supabase
+        .from('Products')
+        .update({ quantity_in_stock: product.quantity_in_stock })
+        .eq('id', product.id)
+      console.log(data)
     },
   },
   computed: {
@@ -144,22 +169,5 @@ export default {
       return this.$store.getters.getProducts
     },
   },
-
-  // mounted() {
-  //   // Listen to broadcast messages.
-  //   this.$supabase
-  //     .channel('currentLocation')
-  //     .on(
-  //       'broadcast',
-  //       { event: 'cursor-pos' },
-  //       (payload) => (this.center = payload.payload)
-  //       // console.log(payload)
-  //     )
-  //     .subscribe((status) => {
-  //       if (status === 'SUBSCRIBED') {
-  //         // your callback function will now be called with the messages broadcast by the other client
-  //       }
-  //     })
-  // },
 }
 </script>

@@ -4,10 +4,10 @@
       <v-btn
         color="primary"
         dark
-        outlined
         v-bind="attrs"
         v-on="on"
         class="text-capitalize mr-3"
+        style="position: absolute; left: 0; bottom: 50%; z-index: 5000;"
       >
         Add driver
       </v-btn>

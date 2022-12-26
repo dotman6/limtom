@@ -12,21 +12,16 @@
       <client-only>
         <l-map :zoom="13" :center="center" ref="map">
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-          <l-layer-group ref="features">
-            <l-popup>
-              <span> Yay I was opened by {{ caller }}</span></l-popup
-            >
-          </l-layer-group>
-          <l-marker
-            :lat-lng="location"
-            v-for="(location, index) in orderLocations"
-            :key="index"
-            @click="openPopUp(location, $event)"
-          ></l-marker>
+          <l-geo-json
+            :geojson="geoJson"
+            v-if="geoJson"
+            :options="options"
+          ></l-geo-json>
           <l-marker
             :lat-lng="location"
             :draggable="draggable"
             @drag="track($event)"
+            @dragend="confirmLocation"
             ><l-icon
               icon-url="https://harrywood.co.uk/maps/examples/leaflet/marker-icon-red.png"
             >
@@ -47,11 +42,23 @@
         <i class="circle dot outline icon large"></i>
         Stop Location
       </v-btn>
+
+      <v-btn
+        class="ui v-btn"
+        @click="deliverOrder"
+        color="primary"
+        :disabled="disable"
+      >
+        <i class="circle dot outline icon large"></i>
+        Deliver Order
+      </v-btn>
     </section>
   </div>
 </template>
 
 <script>
+import { getDistance } from 'geolib'
+
 export default {
   layout: 'login',
   data() {
@@ -72,6 +79,8 @@ export default {
 
       authenticated: false,
       authListener: null,
+      geoJson: null,
+      disable: true,
     }
   },
 
@@ -106,7 +115,7 @@ export default {
       }
       this.orders = orders
       this.getLocation(this.orders)
-
+      this.geoJson = this.convertToGeoJSON(this.orders)
       //Create a layer from the points
       // console.log(this.$L.layerGroup(this.orderLocations))
     },
@@ -118,11 +127,42 @@ export default {
       }
     },
 
+    convertToGeoJSON(arr) {
+      const geoJSON = {
+        type: 'FeatureCollection',
+        features: [],
+      }
+
+      arr.forEach((item) => {
+        const feature = {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [
+              item.billing_address.longitude,
+              item.billing_address.latitude,
+            ],
+          },
+          properties: {
+            customer_name: item.customer_name,
+            email: item.email,
+            id: item.id,
+            deliveryStatus: item.delivery_status,
+          },
+        }
+        geoJSON.features.push(feature)
+      })
+      return geoJSON
+    },
+
     openPopUp(latLng) {
       // this.caller = caller
       this.$refs.features.mapObject.openPopup(latLng)
     },
     track(event) {
+      this.lat = event.latlng.lat
+      this.lng = event.latlng.lng
+
       let lat = event.latlng.lat
       let lng = event.latlng.lng
       this.location = [lat, lng]
@@ -162,6 +202,7 @@ export default {
 
     stopLocationUpdates() {
       navigator.geolocation.clearWatch(this.watchPositionId)
+      //update the order table with the delivery status
     },
 
     async logOutButtonPressed() {
@@ -177,6 +218,58 @@ export default {
         this.user = user.data.user
       } else {
         this.authenticated = false
+      }
+    },
+
+    confirmLocation() {
+      //Look out for the order close to the driver
+      this.geoJson.features.forEach((orderGeo) => {
+        const dist = getDistance(
+          { latitude: this.lat, longitude: this.lng },
+          {
+            latitude: orderGeo.geometry.coordinates[1],
+            longitude: orderGeo.geometry.coordinates[0],
+          }
+        )
+
+        if (dist <= 5) {
+          this.disable = false
+          this.productToDeliver = orderGeo.properties.id
+        }
+      })
+    },
+    async deliverOrder() {
+      //Update the delivery status of the order table
+      const { data, error } = await this.$supabase
+        .from('orders')
+        .update({ delivery_status: true })
+        .eq('id', this.productToDeliver)
+
+      this.disable = true
+    },
+  },
+
+  computed: {
+    options() {
+      return {
+        onEachFeature: this.onEachFeatureFunction,
+      }
+    },
+    onEachFeatureFunction() {
+      return (feature, layer) => {
+        layer.bindPopup(
+          `<p ref="mine" class="mt-0 mb-0 text-subtitle-1 text-center font-weight-bold text-capitalize">Name:
+            ${feature.properties.customer_name}</p>
+            <p class="mt-2 mb-2 text-subtitle-2 text-center font-weight-bold">Email:
+            ${feature.properties.email}
+            </p><p class="mt-2 mb-2 text-subtitle-2 text-center font-weight-bold">Delivery status:
+            ${feature.properties.deliveryStatus}
+            </p>`,
+          {
+            permanent: false,
+            sticky: true,
+          }
+        )
       }
     },
   },

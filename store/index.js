@@ -84,7 +84,6 @@ export const mutations = {
     let cart = localStorage.getItem('myCart')
     if (cart) {
       state.cart = JSON.parse(cart)
-      console.log(JSON.parse(cart))
     }
   },
 

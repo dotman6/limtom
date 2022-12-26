@@ -6,6 +6,7 @@
     class="elevation-1"
     :search="search"
     dense
+    :items-per-page="5"
   >
     <template v-slot:top>
       <v-toolbar flat>
@@ -307,11 +308,6 @@ export default {
         .from('Products')
         .select('*')
       //   this.$store.dispatch('setProducts', Products)
-      this.$store.dispatch('setSnackbar', {
-        show: true,
-        content: `All products retrieved`,
-        color: 'success',
-      })
       if (error) {
         this.$store.dispatch('setSnackbar', {
           show: true,
