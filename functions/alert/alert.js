@@ -1,14 +1,12 @@
+'use strict'
+const nodemailer = require('nodemailer')
 const createClient = require('@supabase/supabase-js').createClient
 const { schedule } = require('@netlify/functions')
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.API_KEY)
-const mailgun = require('mailgun-js')({
-  apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.DOMAIN,
-  url: process.env.MAILGUN_URL,
-})
 
-const getProducts = async () => {
+// async..await is not allowed in global scope, must use a wrapper
+exports.handler = schedule('* * * * *', async function () {
   let { data: Products, error } = await supabase.from('Products').select('*')
 
   //Get product name and expiring date from the products
@@ -20,7 +18,9 @@ const getProducts = async () => {
       return {
         product_name: el.product_name,
         expiring_date: el.expiring_date,
-        days_to_expire: `${difference} days lefts`,
+        days_to_expire: `${
+          difference > 0 ? `${difference} days lefts` : 'Already expired'
+        }`,
       }
     }
   })
@@ -41,14 +41,13 @@ const getProducts = async () => {
   `
     )
     .join('')
-  return rows
-}
 
-const mailgunData = {
-  from: 'horlartom@live.com',
-  to: 'horlartom2013@gmail.com',
-  subject: `New mail from `,
-  html: `<html>
+  const mailgunData = {
+    from: 'mike&cole-stores.com',
+    to:
+      'arilewolaolatomiwa@rocketmail.com,horlartom@live.com,cole.dotun@gmail.com,michaelsantos755@gmail.com,colefolashade3@gmail.com',
+    subject: `New mail from `,
+    html: `<html>
         <body>
           <h1 style="padding:30px; text-decoration:underline; text-align:center;">List of product abouts to expires</h1>
            <table style="border: 1px solid black border-collapse: collapse width:50%; margin:auto;">
@@ -60,37 +59,32 @@ const mailgunData = {
               </tr>
             </thead>
             <tbody>
-              ${getProducts}
+              ${rows}
             </tbody>
           </table>
         </body>
       </html>
     `,
-}
+  }
 
-const sendEmail = async () => {
-  console.log('Sending email')
-
-  const res = await mailgun.messages().send(mailgunData)
-  return res
-}
-
-exports.handler = schedule('0 8 * * *', async (event) => {
-  // Only allow POST
-  //   if (event.httpMethod !== 'POST') {
-  //     return { statusCode: 405, body: 'Method Not Allowed' }
-  //   }
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'horlartom2013@gmail.com',
+      pass: 'vhvkurycduvplnvl',
+    },
+  })
 
   try {
-    sendEmail()
+    // send mail with defined transport object
+    let info = await transporter.sendMail(mailgunData)
+    console.log(info)
     return {
       statusCode: 200,
-      body: 'Email sent!',
+      body: 'Message sent',
     }
-  } catch (err) {
-    return {
-      statusCode: 500,
-      body: err.message || err,
-    }
+  } catch (error) {
+    return { statusCode: 500, body: error.message }
   }
 })
