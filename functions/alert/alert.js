@@ -6,7 +6,7 @@ const { schedule } = require('@netlify/functions')
 const supabase = createClient(process.env.SUPABASE_URL, process.env.API_KEY)
 
 // async..await is not allowed in global scope, must use a wrapper
-exports.handler = schedule('* * * * *', async function () {
+exports.handler = schedule('0 9,17 * * *', async function () {
   let { data: Products, error } = await supabase.from('Products').select('*')
 
   //Get product name and expiring date from the products
