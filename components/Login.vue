@@ -87,7 +87,7 @@ export default {
             },
           },
         })
-        if (data.user.user_metadata.role === 'admin') {
+        if (data.user.user_metadata.role.toLowerCase() === 'admin') {
           //Check the user data
           this.$router.push('/admin/products')
 
