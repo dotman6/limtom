@@ -55,6 +55,7 @@
 </template>
 <script>
 export default {
+  layout: 'login',
   name: 'driver-set-password',
   data() {
     return {
