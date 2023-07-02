@@ -93,13 +93,13 @@ export default {
             },
           },
         })
-        // if (!error && data.user.identities.length === 0) {
-        //   this.$store.dispatch('setSnackbar', {
-        //     show: true,
-        //     content: 'Account already exist',
-        //     color: 'error',
-        //   })
-        // }
+        if (!error && data.user.identities.length === 0) {
+          this.$store.dispatch('setSnackbar', {
+            show: true,
+            content: 'Account already exist',
+            color: 'error',
+          })
+        }
         if (!error && data.user.identities.length > 0) {
           console.log(data)
           this.$store.dispatch('setSnackbar', {
