@@ -7,7 +7,7 @@
         v-bind="attrs"
         v-on="on"
         class="text-capitalize mr-3"
-        style="position: absolute; left: 0; bottom: 50%; z-index: 5000;"
+        style="position: absolute; left: 0; bottom: 50%; z-index: 5000"
       >
         Add driver
       </v-btn>
@@ -41,6 +41,7 @@
                   clearable
                   dense
                   filled
+                  type="email"
                   hide-details
                   placeholder="Enter email to invite"
                 ></v-text-field>
@@ -90,6 +91,7 @@ export default {
           email: `${this.email}`,
           user_metadata: { role: 'driver' },
         })
+        const url = 'https://localhost:3000'
 
         try {
           let response = await fetch(
@@ -109,6 +111,7 @@ export default {
           })
           this.email = ''
         } catch (error) {
+          console.log(error)
           this.$store.dispatch('setSnackbar', {
             show: true,
             content: 'Error sending invitation',

@@ -6,7 +6,7 @@
       <p>No Items Just Yet</p>
     </div>
     <v-container>
-      <div class="mb-3" v-if="$store.state.cart.length > 0">
+      <div class="cart-container mb-3" v-if="$store.state.cart.length > 0">
         <v-btn
           nuxt
           to="/cart/confirm"
@@ -15,6 +15,7 @@
           color="primary"
           >Checkout</v-btn
         >
+        <p class="text-h6">Total Amount: NGN{{ getTotalAmount.toFixed(2) }}</p>
       </div>
       <v-row>
         <template v-for="(c, i) in $store.state.cart">
@@ -74,7 +75,28 @@ export default {
   components: {
     ScrollTop,
   },
+  data() {
+    return {
+      totalAmount: 0,
+    }
+  },
+
+  computed: {
+    getTotalAmount() {
+      return this.$store.getters.get_cart_amount
+    },
+  },
 }
 </script>
 
-<style></style>
+<style lang="scss">
+.cart-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between;
+
+  p {
+    margin-block-end: 0;
+  }
+}
+</style>

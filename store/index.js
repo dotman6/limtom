@@ -40,6 +40,14 @@ export const getters = {
   getEditedItem(state) {
     return state.editedItem
   },
+
+  get_cart_amount(state) {
+    let total = 0
+    state.cart.forEach((item) => {
+      total += item.product.price * item.quantity
+    })
+    return total
+  },
 }
 
 //ALL MUTATION FOR THE STORE

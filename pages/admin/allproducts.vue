@@ -173,12 +173,12 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.expiring_date="{ item }">
+    <template v-slot:[`item.expiring_date`]="{ item }">
       <v-chip :color="getColor(item.expiring_date)" dark>
         {{ item.expiring_date }}
       </v-chip>
     </template>
-    <template v-slot:item.actions="{ item }">
+    <template v-slot:[`item.actions`]="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)">
         mdi-pencil
       </v-icon>

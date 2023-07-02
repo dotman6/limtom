@@ -27,7 +27,11 @@ export default {
   css: ['@sweetalert2/theme-material-ui', '~/assets/main.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [{ src: '~plugins/client.js' }, { src: '~plugins/cart.js' }],
+  plugins: [
+    { src: '~plugins/client.js' },
+    { src: '~plugins/cart.js' },
+    { src: '~/plugins/mail.js', mode: 'server' },
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -66,6 +70,13 @@ export default {
           { name: 'contact', to: process.env.CONTACT_MAIL },
           // { name: 'support', to: 'support@foo.de' },
         ],
+        // smtp: {
+        //   service: 'gmail',
+        //   auth: {
+        //     user: 'horlartom2013@gmail.com',
+        //     pass: 'vhvkurycduvplnvl',
+        //   },
+        // },
         smtp: {
           host: process.env.SMTP_HOST,
           port: process.env.SMTP_PORT,
@@ -77,6 +88,11 @@ export default {
       },
     ],
   ],
+  //server
+  serverMiddleware: [
+    { path: '/api', handler: '~/serverMiddleware/emailMiddleware.js' },
+  ],
+
   webfontloader: {
     google: {
       families: ['DM+Sans:wght@400;500;700&display=swap'],
