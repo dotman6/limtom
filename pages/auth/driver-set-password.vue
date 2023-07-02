@@ -4,7 +4,7 @@
       <v-card class="pb-5 pt-5">
         <v-card-title class="headline d-flex flex-column pb-3">
           <v-avatar color="black"> SCC </v-avatar>
-          Driver set password
+          Set password
         </v-card-title>
         <v-card-text class="pl-5 pr-5">
           <v-form ref="form" v-model="valid" lazy-validation>
@@ -83,6 +83,7 @@ export default {
   methods: {
     async setPassword() {
       if (this.$refs.form.validate()) {
+        console.log(this.$supabase.auth)
         const { data, error } = await this.$supabase.auth.updateUser({
           //   email: this.email,
           password: this.password,
