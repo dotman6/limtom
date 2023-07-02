@@ -79,15 +79,13 @@ export default {
       items: ['Driver'],
     }
   },
-  async onMounted() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    console.log(user)
-  },
 
   methods: {
     async setPassword() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      console.log(user)
       if (this.$refs.form.validate()) {
         console.log(this.$supabase.auth)
         const { data, error } = await this.$supabase.auth.updateUser({
