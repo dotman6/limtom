@@ -44,10 +44,10 @@
         <v-btn
           color="success"
           class="signup-btn text-center"
-          @click="signup"
+          @click="setPassword"
           block
         >
-          Signup
+          Set password
         </v-btn>
       </v-form>
     </v-card-text>
@@ -77,9 +77,9 @@ export default {
   },
 
   methods: {
-    async signup() {
+    async setPassword() {
       if (this.$refs.form.validate()) {
-        const { data, error } = await this.$supabase.auth.update({
+        const { data, error } = await this.$supabase.auth.updateUser({
           email: this.email,
           password: this.password,
           options: {
