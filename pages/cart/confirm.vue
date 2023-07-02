@@ -262,7 +262,7 @@ export default {
     async sendMail(data) {
       this.response = ''
       this.$axios
-        .post('/api/send-email', {
+        .post('https://master--smart-supply-store.netlify.app/api/send-email', {
           from: 'mike&cole-stores.com',
           to: `${this.email}`,
           subject: `Order details`,

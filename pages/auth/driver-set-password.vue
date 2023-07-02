@@ -79,6 +79,12 @@ export default {
       items: ['Driver'],
     }
   },
+  async onMounted() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    console.log(user)
+  },
 
   methods: {
     async setPassword() {
@@ -87,10 +93,8 @@ export default {
         const { data, error } = await this.$supabase.auth.updateUser({
           //   email: this.email,
           password: this.password,
-          options: {
-            data: {
-              role: this.select,
-            },
+          data: {
+            role: this.select,
           },
         })
         if (!error && data.user.identities.length === 0) {
