@@ -7,7 +7,7 @@
     </v-card-title>
     <v-card-text class="pl-5 pr-5">
       <v-form ref="form" v-model="valid" lazy-validation>
-        <v-text-field
+        <!-- <v-text-field
           v-model="email"
           :rules="emailRules"
           label="E-mail"
@@ -16,7 +16,7 @@
           clearable
           dense
           filled
-        ></v-text-field>
+        ></v-text-field> -->
         <v-text-field
           v-model="password"
           :rules="passwordRules"
@@ -81,7 +81,7 @@ export default {
     async setPassword() {
       if (this.$refs.form.validate()) {
         const { data, error } = await this.$supabase.auth.updateUser({
-          email: this.email,
+          //   email: this.email,
           password: this.password,
           options: {
             data: {
