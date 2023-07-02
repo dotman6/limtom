@@ -260,44 +260,9 @@ export default {
     },
 
     async sendMail(data) {
-      this.response = ''
-      this.$axios
-        .post('https://master--smart-supply-store.netlify.app/api/send-email', {
-          from: 'mike&cole-stores.com',
-          to: `${this.email}`,
-          subject: `Order details`,
-          html: `<html>
-        <body>
-          <h5 style="margin-bottom:5px;">Order id:${data[0].id}</h5>
-           <table style="border: 1px solid black border-collapse: collapse width:50%; margin:auto;">
-            <thead>
-              <tr>
-                <th style="border: 1px solid black; padding: 3px;">Product name</th>
-                <th style="border: 1px solid black; padding: 3px;">Price</th>
-                <th style="border: 1px solid black; padding: 3px; ">Qty</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${this.rows}
-              <h3>Total: NGN${this.getTotalAmount.toFixed(2)}</h3>
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `,
-        })
-        .then((response) => {
-          console.log(response)
-          this.response = response.data.message
-        })
-        .catch((error) => {
-          this.response = 'Failed to send email'
-          console.error('Error sending email:', error)
-        })
-
-      //   try {
-      //     // send mail with defined transport object
-      //     let info = await this.$mail.send({
+      //   this.response = ''
+      //   this.$axios
+      //     .post('/api/send-email', {
       //       from: 'mike&cole-stores.com',
       //       to: `${this.email}`,
       //       subject: `Order details`,
@@ -313,7 +278,7 @@ export default {
       //           </tr>
       //         </thead>
       //         <tbody>
-      //           ${rows}
+      //           ${this.rows}
       //           <h3>Total: NGN${this.getTotalAmount.toFixed(2)}</h3>
       //         </tbody>
       //       </table>
@@ -321,14 +286,49 @@ export default {
       //   </html>
       // `,
       //     })
-      //     console.log(info)
-      //     return {
-      //       statusCode: 200,
-      //       body: 'Message sent',
-      //     }
-      //   } catch (error) {
-      //     return { statusCode: 500, body: error.message }
-      //   }
+      //     .then((response) => {
+      //       console.log(response)
+      //       this.response = response.data.message
+      //     })
+      //     .catch((error) => {
+      //       this.response = 'Failed to send email'
+      //       console.error('Error sending email:', error)
+      //     })
+
+      try {
+        // send mail with defined transport object
+        let info = await this.$mail.send({
+          from: 'mike&cole-stores.com',
+          to: `${this.email}`,
+          subject: `Order details`,
+          html: `<html>
+          <body>
+            <h5 style="margin-bottom:5px;">Order id:${data[0].id}</h5>
+             <table style="border: 1px solid black border-collapse: collapse width:50%; margin:auto;">
+              <thead>
+                <tr>
+                  <th style="border: 1px solid black; padding: 3px;">Product name</th>
+                  <th style="border: 1px solid black; padding: 3px;">Price</th>
+                  <th style="border: 1px solid black; padding: 3px; ">Qty</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+                <h3>Total: NGN${this.getTotalAmount.toFixed(2)}</h3>
+              </tbody>
+            </table>
+          </body>
+        </html>
+      `,
+        })
+        console.log(info)
+        return {
+          statusCode: 200,
+          body: 'Message sent',
+        }
+      } catch (error) {
+        return { statusCode: 500, body: error.message }
+      }
     },
   },
 }
