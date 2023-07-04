@@ -72,7 +72,7 @@ export default {
         (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
       select: null,
-      items: ['Admin', 'Driver'],
+      items: ['Admin'],
     }
   },
 
