@@ -1,15 +1,14 @@
-const nodemailer = require('nodemailer')
+import axios from 'axios'
 
-// Create a Nodemailer transporter using SMTP
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'horlartom2013@gmail.com',
-    pass: 'vhvkurycduvplnvl',
-  },
-})
+export default function ({ $config }, inject) {
+  const sendEmail = async (data) => {
+    try {
+      const response = await axios.post($config.sendEmailFunctionURL, data)
+      return response.data
+    } catch (error) {
+      throw new Error('Failed to send email')
+    }
+  }
 
-export default (_, inject) => {
-  inject('transporter', transporter)
+  inject('sendEmail', sendEmail)
 }
-// module.exports = transporter

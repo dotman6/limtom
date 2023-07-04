@@ -54,6 +54,7 @@ export default {
     MAILGUN_API_KEY: process.env.MAILGUN_API_KEY,
     DOMAIN: process.env.DOMAIN,
     MAILGUN_URL: process.env.MAILGUN_URL,
+    // sendEmailFunctionURL: 'YOUR_SEND_EMAIL_FUNCTION_URL',
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules
