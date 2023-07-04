@@ -102,7 +102,7 @@ export default {
 
         try {
           const response = await fetch(
-            process.env.NETLIFYAPI_BASEURL,
+            'https://smart-supply-store.netlify.app/.netlify/functions/sendMail',
             requestOptions
           )
           const result = await response.text()
