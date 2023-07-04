@@ -44,8 +44,7 @@ exports.handler = schedule('0 9,17 * * *', async function () {
 
   const mailgunData = {
     from: 'mike&cole-stores.com',
-    to:
-      'arilewolaolatomiwa@rocketmail.com,horlartom@live.com,cole.dotun@gmail.com,michaelsantos755@gmail.com,colefolashade3@gmail.com',
+    to: 'arilewolaolatomiwa@rocketmail.com,horlartom@live.com,cole.dotun@gmail.com,michaelsantos755@gmail.com,colefolashade3@gmail.com',
     subject: `New mail from `,
     html: `<html>
         <body>
@@ -72,7 +71,7 @@ exports.handler = schedule('0 9,17 * * *', async function () {
     service: 'gmail',
     auth: {
       user: 'horlartom2013@gmail.com',
-      pass: 'vhvkurycduvplnvl',
+      pass: process.env.PASS,
     },
   })
 
