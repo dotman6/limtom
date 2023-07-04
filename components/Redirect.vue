@@ -1,13 +1,19 @@
 <template>
   <div>
-    <v-btn color="primary" v-if="hasQueryString">SIGN-IN</v-btn>
+    <v-btn
+      color="primary"
+      v-if="hasHash"
+      nuxt
+      to="https://smart-supply-store.netlify.app/auth/login"
+      >SIGN-IN</v-btn
+    >
   </div>
 </template>
 
 <script>
 export default {
   computed: {
-    hasQueryString() {
+    hasHash() {
       return Object.keys(this.$route.hash).length > 0
     },
   },
