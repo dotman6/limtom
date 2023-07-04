@@ -14,7 +14,9 @@
 export default {
   computed: {
     hasHash() {
-      return Object.keys(this.$route.hash).length > 0
+      return (
+        this.$route.hash.length > 0 && this.$route.hash.includes('access_token')
+      )
     },
   },
 }
