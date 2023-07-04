@@ -8,7 +8,7 @@
 export default {
   computed: {
     hasQueryString() {
-      return Object.keys(this.$route.query).length > 0
+      return Object.keys(this.$route.hash).length > 0
     },
   },
 }
