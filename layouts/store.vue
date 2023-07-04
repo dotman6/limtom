@@ -35,6 +35,7 @@
       <v-btn @click="toggleTheme" icon>
         <v-icon size="20">mdi-brightness-7</v-icon>
       </v-btn>
+      <redirect />
     </v-app-bar>
     <notify />
     <v-main app>
@@ -48,11 +49,13 @@
 <script>
 import Cart from '~/components/Cart.vue'
 import Notify from '~/components/Notification.vue'
+import Redirect from '~/components/Redirect.vue'
 export default {
   name: 'Store',
   components: {
     Cart,
     Notify,
+    Redirect,
   },
   data() {
     return {
