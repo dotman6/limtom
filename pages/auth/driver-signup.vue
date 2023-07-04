@@ -1,57 +1,61 @@
 <template>
-  <v-card class="pb-5 pt-5">
-    <v-card-title class="headline d-flex flex-column pb-3">
-      <v-avatar color="black"> SCC-DRIVER </v-avatar>
+  <v-row justify="center" align="center">
+    <v-col cols="12" sm="4" md="3">
+      <v-card class="pb-5 pt-5">
+        <v-card-title class="headline d-flex flex-column pb-3">
+          <v-avatar color="black"> SCC-DRIVER </v-avatar>
 
-      SignUp
-    </v-card-title>
-    <v-card-text class="pl-5 pr-5">
-      <v-form ref="form" v-model="valid" lazy-validation>
-        <v-text-field
-          v-model="email"
-          :rules="emailRules"
-          label="E-mail"
-          required
-          outlined
-          clearable
-          dense
-          filled
-        ></v-text-field>
-        <v-text-field
-          v-model="password"
-          :rules="passwordRules"
-          label="password"
-          type="password"
-          required
-          outlined
-          clearable
-          dense
-          filled
-        ></v-text-field>
+          SignUp
+        </v-card-title>
+        <v-card-text class="pl-5 pr-5">
+          <v-form ref="form" v-model="valid" lazy-validation>
+            <v-text-field
+              v-model="email"
+              :rules="emailRules"
+              label="E-mail"
+              required
+              outlined
+              clearable
+              dense
+              filled
+            ></v-text-field>
+            <v-text-field
+              v-model="password"
+              :rules="passwordRules"
+              label="password"
+              type="password"
+              required
+              outlined
+              clearable
+              dense
+              filled
+            ></v-text-field>
 
-        <v-select
-          v-model="select"
-          :items="items"
-          :rules="[(v) => !!v || 'Item is required']"
-          label="Role"
-          required
-          outlined
-          dense
-          clearable
-          filled
-        ></v-select>
+            <v-select
+              v-model="select"
+              :items="items"
+              :rules="[(v) => !!v || 'Item is required']"
+              label="Role"
+              required
+              outlined
+              dense
+              clearable
+              filled
+            ></v-select>
 
-        <v-btn
-          color="success"
-          class="signup-btn text-center"
-          @click="signup"
-          block
-        >
-          Signup
-        </v-btn>
-      </v-form>
-    </v-card-text>
-  </v-card>
+            <v-btn
+              color="success"
+              class="signup-btn text-center"
+              @click="signup"
+              block
+            >
+              Signup
+            </v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 <script>
 export default {
