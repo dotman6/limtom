@@ -260,50 +260,20 @@ export default {
     },
 
     async sendMail(data) {
-      //   this.response = ''
-      //   this.$axios
-      //     .post('/api/send-email', {
-      //       from: 'mike&cole-stores.com',
-      //       to: `${this.email}`,
-      //       subject: `Order details`,
-      //       html: `<html>
-      //     <body>
-      //       <h5 style="margin-bottom:5px;">Order id:${data[0].id}</h5>
-      //        <table style="border: 1px solid black border-collapse: collapse width:50%; margin:auto;">
-      //         <thead>
-      //           <tr>
-      //             <th style="border: 1px solid black; padding: 3px;">Product name</th>
-      //             <th style="border: 1px solid black; padding: 3px;">Price</th>
-      //             <th style="border: 1px solid black; padding: 3px; ">Qty</th>
-      //           </tr>
-      //         </thead>
-      //         <tbody>
-      //           ${this.rows}
-      //           <h3>Total: NGN${this.getTotalAmount.toFixed(2)}</h3>
-      //         </tbody>
-      //       </table>
-      //     </body>
-      //   </html>
-      // `,
-      //     })
-      //     .then((response) => {
-      //       console.log(response)
-      //       this.response = response.data.message
-      //     })
-      //     .catch((error) => {
-      //       this.response = 'Failed to send email'
-      //       console.error('Error sending email:', error)
-      //     })
+      var myHeaders = new Headers()
+      myHeaders.append('Content-Type', 'application/json')
 
-      try {
-        // send mail with defined transport object
-        let info = await this.$mail.send({
+      var raw = JSON.stringify({
+        mailOptions: {
           from: 'mike&cole-stores.com',
           to: `${this.email}`,
           subject: `Order details`,
           html: `<html>
           <body>
-            <h5 style="margin-bottom:5px;">Order id:${data[0].id}</h5>
+            <h2 style="text-align:center; color:blue;">Mike & Cole stores</h2>
+            <h3 style="margin-bottom:5px; text-align:center;">Order id:${
+              data[0].id
+            }</h3>
              <table style="border: 1px solid black border-collapse: collapse width:50%; margin:auto;">
               <thead>
                 <tr>
@@ -313,21 +283,43 @@ export default {
                 </tr>
               </thead>
               <tbody>
-                ${rows}
+                ${this.rows}
                 <h3>Total: NGN${this.getTotalAmount.toFixed(2)}</h3>
               </tbody>
             </table>
           </body>
         </html>
       `,
+        },
+      })
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow',
+      }
+
+      try {
+        const response = await fetch(
+          process.env.NETLIFYAPI_BASEURL,
+          requestOptions
+        )
+        const result = await response.text()
+        this.$store.dispatch('setSnackbar', {
+          show: true,
+          content: `Check your mail for your order receipt`,
+          color: 'success',
         })
-        console.log(info)
-        return {
-          statusCode: 200,
-          body: 'Message sent',
-        }
+        this.email = ''
+        console.log(result)
       } catch (error) {
-        return { statusCode: 500, body: error.message }
+        this.$store.dispatch('setSnackbar', {
+          show: true,
+          content: 'Could not send order receipt',
+          color: 'error',
+        })
+        console.log('Error occurred:', error)
       }
     },
   },

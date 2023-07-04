@@ -30,7 +30,7 @@ export default {
   plugins: [
     { src: '~plugins/client.js' },
     { src: '~plugins/cart.js' },
-    { src: '~/plugins/mail.js', mode: 'server' },
+    { src: '~/plugins/mail.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -54,7 +54,6 @@ export default {
     MAILGUN_API_KEY: process.env.MAILGUN_API_KEY,
     DOMAIN: process.env.DOMAIN,
     MAILGUN_URL: process.env.MAILGUN_URL,
-    // sendEmailFunctionURL: 'YOUR_SEND_EMAIL_FUNCTION_URL',
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -64,34 +63,6 @@ export default {
     'nuxt-leaflet',
     'vue-sweetalert2/nuxt/no-css',
     'nuxt-webfontloader',
-    [
-      'nuxt-mail',
-      {
-        message: [
-          { name: 'contact', to: process.env.CONTACT_MAIL },
-          // { name: 'support', to: 'support@foo.de' },
-        ],
-        // smtp: {
-        //   service: 'gmail',
-        //   auth: {
-        //     user: 'horlartom2013@gmail.com',
-        //     pass: 'vhvkurycduvplnvl',
-        //   },
-        // },
-        smtp: {
-          host: process.env.SMTP_HOST,
-          port: process.env.SMTP_PORT,
-          auth: {
-            user: process.env.SMTP_USERNAME,
-            pass: process.env.SMTP_PASSWORD,
-          },
-        },
-      },
-    ],
-  ],
-  //server
-  serverMiddleware: [
-    { path: '/api', handler: '~/serverMiddleware/emailMiddleware.js' },
   ],
 
   webfontloader: {

@@ -23,6 +23,7 @@ exports.handler = async function (event) {
       body: 'Message sent',
     }
   } catch (error) {
+    console.log(mailOptions)
     return { statusCode: 500, body: error.message }
   }
 }

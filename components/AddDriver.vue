@@ -81,44 +81,46 @@ export default {
   methods: {
     async addDriver() {
       if (this.$refs.form.validate()) {
-        let headersList = {
-          apikey: process.env.API_KEY,
-          Authorization: `Bearer ${process.env.SERVICE_ROLE}`,
-          'Content-Type': 'application/json',
+        var myHeaders = new Headers()
+        myHeaders.append('Content-Type', 'application/json')
+
+        var raw = JSON.stringify({
+          mailOptions: {
+            from: 'mike&cole-stores.com',
+            to: `${this.email}`,
+            subject: 'Driver invite link',
+            html: '<h2>You have been invited</h2>\n<p>You have been invited to create a user on https://smart-supply-store.netlify.app. Follow this link to accept the invite:</p>\n<p><a href="https://smart-supply-store.netlify.app/auth/driver-signup">Accept the invite</a></p>',
+          },
+        })
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow',
         }
 
-        let bodyContent = JSON.stringify({
-          email: `${this.email}`,
-          user_metadata: { role: 'driver' },
-        })
-        const url = 'https://localhost:3000'
-
         try {
-          let response = await fetch(
-            `${process.env.SUPABASE_URL}/auth/v1/invite`,
-            {
-              method: 'POST',
-              body: bodyContent,
-              headers: headersList,
-            }
+          const response = await fetch(
+            process.env.NETLIFYAPI_BASEURL,
+            requestOptions
           )
-
-          let data = await response.text()
+          const result = await response.text()
           this.$store.dispatch('setSnackbar', {
             show: true,
             content: `Invitation sent`,
             color: 'success',
           })
           this.email = ''
+          console.log(result)
         } catch (error) {
-          console.log(error)
           this.$store.dispatch('setSnackbar', {
             show: true,
             content: 'Error sending invitation',
             color: 'error',
           })
+          console.log('Error occurred:', error)
         }
-
         this.dialog = false
       }
     },
