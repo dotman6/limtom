@@ -1,12 +1,6 @@
 <template>
   <div>
-    <v-btn
-      color="primary"
-      v-if="hasHash"
-      nuxt
-      to="https://smart-supply-store.netlify.app/auth/login"
-      >SIGN-IN</v-btn
-    >
+    <v-btn color="primary" v-if="hasHash" nuxt to="auth/login">SIGN-IN</v-btn>
   </div>
 </template>
 
