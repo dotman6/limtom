@@ -55,7 +55,8 @@
 </template>
 <script>
 export default {
-  name: 'signup',
+  layout: 'login',
+  name: 'driver-signup',
   data() {
     return {
       user: {},
