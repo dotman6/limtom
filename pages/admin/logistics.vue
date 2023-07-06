@@ -1,13 +1,13 @@
 <template>
   <div>
     <add-driver />
-    <div id="map2" style="height: 80vh;">
+    <div id="map2" style="height: 80vh">
       <client-only>
         <l-map
           :zoom="zoom"
           ref="map"
           :center="center"
-          style="position: relative;"
+          style="position: relative"
         >
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
@@ -34,6 +34,7 @@
 import { LIcon } from 'vue2-leaflet'
 import AddDriver from '~/components/AddDriver.vue'
 export default {
+  middleware: 'auth',
   components: {
     AddDriver,
   },

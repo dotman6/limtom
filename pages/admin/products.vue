@@ -60,6 +60,7 @@
 
 <script>
 export default {
+  middleware: 'auth',
   components: {},
   head() {
     return {
@@ -81,54 +82,45 @@ export default {
           id: 1,
           name: 'Home care',
           inStock: '',
-          img:
-            'https://indieseducation.b-cdn.net/wp-content/uploads/2020/05/home-care-fmcg-product.jpg',
+          img: 'https://indieseducation.b-cdn.net/wp-content/uploads/2020/05/home-care-fmcg-product.jpg',
         },
         {
           id: 2,
           name: 'Personal care',
           inStock: '',
-          img:
-            'https://indieseducation.b-cdn.net/wp-content/uploads/2020/05/personal-care-fmcg-product-1.jpg',
+          img: 'https://indieseducation.b-cdn.net/wp-content/uploads/2020/05/personal-care-fmcg-product-1.jpg',
         },
         {
           id: 3,
           name: 'Foods & Beverages',
           inStock: '',
-          img:
-            'https://indieseducation.b-cdn.net/wp-content/uploads/2020/05/fmcg-product-food-and-beverages.jpg',
+          img: 'https://indieseducation.b-cdn.net/wp-content/uploads/2020/05/fmcg-product-food-and-beverages.jpg',
         },
       ],
       productImg: [
         {
           name: '2-Sure herbal moisture plus - 70g',
-          img:
-            'https://i0.wp.com/nextcashandcarry.com.ng/wp-content/uploads/2022/05/Anti-Bac.-Soap-120g-Herbal.png?fit=559%2C374&ssl=1',
+          img: 'https://i0.wp.com/nextcashandcarry.com.ng/wp-content/uploads/2022/05/Anti-Bac.-Soap-120g-Herbal.png?fit=559%2C374&ssl=1',
         },
         {
           name: '2-Sure dishwasher fresh lemon- 500ml',
-          img:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbVq_XbSJ5wCsp_68VOXt8bXaFdCg6jXQ_8g&usqp=CAU',
+          img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbVq_XbSJ5wCsp_68VOXt8bXaFdCg6jXQ_8g&usqp=CAU',
         },
         {
           name: 'Colgate  maximum protection-95g',
-          img:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX_RQY7ILjYBs8gDiPnW16xyzbaLSPJxctLg&usqp=CAU',
+          img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX_RQY7ILjYBs8gDiPnW16xyzbaLSPJxctLg&usqp=CAU',
         },
         {
           name: 'Indomie relish chicken delight- 114g',
-          img:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB18gOHON_rd4R8Gb6JS93_TB6LKOrNUpyZA&usqp=CAU',
+          img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB18gOHON_rd4R8Gb6JS93_TB6LKOrNUpyZA&usqp=CAU',
         },
         {
           name: 'knorr chicken- 8g',
-          img:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB7lQJuhxVgVZ45jDz6Lku_6Urm4CpZRWWkg&usqp=CAU',
+          img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB7lQJuhxVgVZ45jDz6Lku_6Urm4CpZRWWkg&usqp=CAU',
         },
         {
           name: 'Sprite classic- PET- 33cl',
-          img:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8XZ99K7qMRY3Fp451dgyC_28dc4GBu2zJzw&usqp=CAU',
+          img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8XZ99K7qMRY3Fp451dgyC_28dc4GBu2zJzw&usqp=CAU',
         },
       ],
     }

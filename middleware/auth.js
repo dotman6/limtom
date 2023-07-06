@@ -1,13 +1,8 @@
-import _ from '~/plugins/client'
-export default function ({ app }) {
-  const user = JSON.parse(
-    app.$supabase.auth.storage.getItem(app.$supabase.auth.storageKey)
-  )
-  if (user && user.user.user_metadata.role === 'admin') {
-    console.log('logged in')
-    // return redirect('/admin/dashboard')
-  } else {
-    console.log('Not logged in')
-    // return redirect('/')
+export default async function ({ $supabase, redirect }) {
+  //Get user session
+  const { data: user } = await $supabase.auth.getUser()
+  //Check if user is authenticated || user.user.role !== 'authenticated'
+  if (!user) {
+    return redirect('/auth/login')
   }
 }

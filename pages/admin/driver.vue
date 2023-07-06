@@ -1,58 +1,96 @@
 <template>
   <div class="driver-view">
-    <section class="top-bar">
-      <div v-if="user">{{ user.email }}</div>
-      <div>Driver</div>
-      <v-btn class="ui v-btn red" @click="logOutButtonPressed">
-        logout
-      </v-btn>
-    </section>
+    <div class="order-sec">
+      <h3 class="text--h3 text-center pa-3 primary--text pt-0">
+        Orders to be delivered
+      </h3>
+      <v-sheet elevation="5" class="order-card pa-6">
+        <v-card
+          elevation=""
+          tile
+          max-width=""
+          v-for="(order, i) in orders"
+          :key="i"
+          class="card"
+        >
+          <v-list-item>
+            <v-list-item-avatar>
+              <v-icon color="orange" dark>mdi-basket</v-icon>
+            </v-list-item-avatar>
 
-    <div id="map-wrap" style="height: 80vh;">
-      <client-only>
-        <l-map :zoom="13" :center="center" ref="map">
-          <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-          <l-geo-json
-            :geojson="geoJson"
-            v-if="geoJson"
-            :options="options"
-          ></l-geo-json>
-          <l-marker
-            :lat-lng="location"
-            :draggable="draggable"
-            @drag="track($event)"
-            @dragend="confirmLocation"
-            ><l-icon
-              icon-url="https://harrywood.co.uk/maps/examples/leaflet/marker-icon-red.png"
-            >
-            </l-icon
-          ></l-marker>
-        </l-map>
-      </client-only>
+            <v-list-item-content>
+              <v-list-item-title class="d-block text-capitalize mb-3">{{
+                order.customer_name
+              }}</v-list-item-title>
+
+              <v-list-item-subtitle class="text-caption"
+                >Qty: {{ order.items.length }}</v-list-item-subtitle
+              >
+            </v-list-item-content>
+
+            <v-list-item-action>
+              <v-btn large color="primary lighten-1 text-capitalize">
+                <v-icon color=""> mdi-home-map-marker</v-icon>
+                locate
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </v-card>
+      </v-sheet>
+      <section class="bottom-bar">
+        <div class="latLngLabel">{{ lat }}, {{ lng }}</div>
+        <v-btn class="ui v-btn green" @click="startLocationUpdates">
+          <i class="circle dot outline icon large"></i>
+          Start Location
+        </v-btn>
+
+        <v-btn class="ui v-btn red" @click="stopLocationUpdates">
+          <i class="circle dot outline icon large"></i>
+          Stop Location
+        </v-btn>
+
+        <v-btn
+          class="ui v-btn"
+          @click="deliverOrder"
+          color="primary"
+          :disabled="disable"
+        >
+          <i class="circle dot outline icon large"></i>
+          Deliver Order
+        </v-btn>
+      </section>
     </div>
 
-    <section class="bottom-bar">
-      <div class="latLngLabel">{{ lat }}, {{ lng }}</div>
-      <v-btn class="ui v-btn green" @click="startLocationUpdates">
-        <i class="circle dot outline icon large"></i>
-        Start Location
-      </v-btn>
-
-      <v-btn class="ui v-btn red" @click="stopLocationUpdates">
-        <i class="circle dot outline icon large"></i>
-        Stop Location
-      </v-btn>
-
-      <v-btn
-        class="ui v-btn"
-        @click="deliverOrder"
-        color="primary"
-        :disabled="disable"
-      >
-        <i class="circle dot outline icon large"></i>
-        Deliver Order
-      </v-btn>
-    </section>
+    <!-- <section class="top-bar">
+      <div v-if="user">{{ user.email }}</div>
+      <div>Driver</div>
+      <v-btn class="ui v-btn red" @click="logOutButtonPressed"> logout </v-btn>
+    </section> -->
+    <div class="main-interface">
+      <div id="map-wrap" style="height: 80vh">
+        <client-only>
+          <l-map :zoom="13" :center="center" ref="map" >
+            <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+            <l-geo-json
+              :geojson="geoJson"
+              v-if="geoJson"
+              :options="options"
+              ref="geojson"
+            ></l-geo-json>
+            <l-marker
+              :lat-lng="location"
+              :draggable="draggable"
+              @drag="track($event)"
+              @dragend="confirmLocation"
+              ><l-icon
+                icon-url="https://harrywood.co.uk/maps/examples/leaflet/marker-icon-red.png"
+              >
+              </l-icon
+            ></l-marker>
+          </l-map>
+        </client-only>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -60,7 +98,8 @@
 import { getDistance } from 'geolib'
 
 export default {
-  layout: 'login',
+  layout: 'driver',
+  middleware: 'auth',
   data() {
     return {
       caller: null,
@@ -84,22 +123,28 @@ export default {
     }
   },
 
-  mounted() {
-    const { data: authListener } = this.$supabase.auth.onAuthStateChange(() =>
-      this.checkUser()
+  async mounted() {
+    const { data: authListener } = await this.$supabase.auth.onAuthStateChange(
+      () => this.checkUser()
     )
     this.authListener = authListener
-    this.checkUser()
+    let user = await this.checkUser()
+
+    if (user) {
+      this.initialize()
+    }
   },
-  created() {
-    this.initialize()
-  },
+
+  created() {},
 
   methods: {
     async initialize() {
+      //Look up for orders that belongs to the driver and are yet to be deliver
       const { data: orders, error } = await this.$supabase
         .from('orders')
         .select('*')
+        .eq('driver_id', this.user.id)
+        .eq('delivery_status', false)
       //   this.$store.dispatch('setProducts', Products)
       this.$store.dispatch('setSnackbar', {
         show: true,
@@ -118,6 +163,10 @@ export default {
       this.geoJson = this.convertToGeoJSON(this.orders)
       //Create a layer from the points
       // console.log(this.$L.layerGroup(this.orderLocations))
+      //Fit map to bound
+      this.$nextTick(() => {
+        this.$refs.map.fitBounds(this.$refs.geojson.getBounds())
+      })
     },
     getLocation(arr) {
       for (const item of arr) {
@@ -215,7 +264,7 @@ export default {
       const user = await this.$supabase.auth.getUser()
       if (user) {
         this.authenticated = true
-        this.user = user.data.user
+        return (this.user = user.data.user)
       } else {
         this.authenticated = false
       }
@@ -279,8 +328,8 @@ export default {
 <style>
 .driver-view {
   display: flex;
-  flex-direction: column;
-  height: 100vh;
+  height: 85vh;
+  column-gap: 30px;
 }
 
 .top-bar {
@@ -298,5 +347,26 @@ export default {
   padding: 20px 0px;
   text-align: center;
   background: white;
+}
+
+.order-card {
+  overflow-y: scroll;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.main-interface {
+  flex: 0 0 65%;
+}
+
+.card:not(:last-of-type) {
+  margin-block-end: 15px;
+}
+
+.order-sec {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 35%;
+  order: 1;
 }
 </style>

@@ -7,6 +7,7 @@
 <script>
 import OrderList from '~/components/OrderList.vue'
 export default {
+  middleware: 'auth',
   components: {
     OrderList,
   },

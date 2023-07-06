@@ -60,10 +60,15 @@
         </template>
       </v-data-table>
     </v-tab-item>
+    <!-- <Notifiy /> -->
   </v-tabs>
 </template>
 <script>
+import Notifiy from './Notification.vue'
 export default {
+  components: {
+    Notifiy,
+  },
   data() {
     return {
       headers: [
@@ -127,10 +132,49 @@ export default {
     },
 
     async switchChange(item) {
+      //Look up for the users to retrieve the admin who are drivers
+      const { data: users, error } = await this.$supabase
+        .from('users')
+        .select('*')
+      if (error) {
+        this.$store.dispatch('setSnackbar', {
+          show: true,
+          content: 'Error retrieving users',
+          color: 'error',
+        })
+      }
+      //filter the drivers from the user data
+      let drivers = []
+      users.forEach((user) => {
+        if (user.raw_user_meta_data.role === 'Driver') {
+          drivers.push(user)
+        }
+      })
+      //If there are no drivers
+      if (drivers.length === 0) {
+        this.$store.dispatch('setSnackbar', {
+          show: true,
+          content: 'There are no drivers added, Pls consider adding drivers',
+          color: 'error',
+        })
+      }
+
+      //Continue if there are drivers
+      if (drivers.length > 0) {
+        const selectedDriverIndex = Math.floor(Math.random() * drivers.length)
+        //Get the selectedDriver ID
+        const deliveryDriver = drivers[selectedDriverIndex].id
+        //Look up for the order to update
+        console.log('Drivers are available to deliver order')
+        this.updateOrder(item, deliveryDriver)
+      }
+    },
+
+    async updateOrder(item, driverId) {
       //Update the order table first
       const { data, error } = await this.$supabase
         .from('orders')
-        .update({ approved: true })
+        .update({ approved: true, driver_id: driverId })
         .eq('id', item.id)
       //Look up for the prduct and update stock
       const order = item
@@ -145,15 +189,21 @@ export default {
           }
         }
       })
-
       this.updatedProducts = updatedProducts.filter(
         (product) => product !== undefined
       )
-
       //Updte the database
       this.updatedProducts.forEach((product) => {
         this.updateTable(product)
       })
+      //Check for error
+      if (error) {
+        this.$store.dispatch('setSnackbar', {
+          show: true,
+          content: 'Error updating orders',
+          color: 'error',
+        })
+      }
     },
 
     async updateTable(product) {

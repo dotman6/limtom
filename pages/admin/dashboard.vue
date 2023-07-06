@@ -33,6 +33,7 @@
 <script>
 export default {
   layout: 'default',
+  middleware: 'auth',
   data() {
     return {
       allCategories: null,
